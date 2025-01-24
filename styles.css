@@ -1,5 +1,101 @@
-body{
+body {
+    background-color: lavenderblush;
+    font-family: Arial, sans-serif;
     margin: 0;
-    background: pink;
-    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    font-size: 55px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 30px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+.container {
+    display: flex; /* Arrange text and image horizontally */
+    align-items: flex-start; /* Align the top of the text and image */
+    margin: 20px; /* Add spacing around the container */
+}
+
+.text {
+    margin-right: 25px; /* Slightly increase the space between the text and image */
+}
+
+.image-container {
+    flex-shrink: 0; /* Prevent the image from shrinking */
+}
+
+.right-photo {
+    width: 450px; /* Make the image larger */
+    height: auto; /* Maintain aspect ratio */
+    border: 2px solid #333; /* Add a border for better visibility */
+    border-radius: 10px; /* Add rounded corners */
+    margin: 0; /* Remove any additional margins */
+}
+.deliverables {
+    margin: 20px; /* Add spacing around the section */
+    padding: 20px; /* Add padding inside the section */
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 8px; /* Optional: Rounded corners */
+}
+
+.deliverables h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.deliverables h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.deliverables ul {
+    list-style-type: disc; /* Use bullets for the list */
+    margin-left: 20px; /* Indent the list */
+    line-height: 1.6; /* Add spacing between list items */
+}
+
+.deliverables li {
+    font-size: 18px;
+    margin-bottom: 10px; /* Add space between list items */
+}
+.intrinsic-photo {
+    width: 300px; /* Make the image larger */
+    height: auto; /* Maintain aspect ratio */
+    border: 2px solid #333; /* Add a border for better visibility */
+    border-radius: 10px; /* Add rounded corners */
+    margin: 0; /* Remove any additional margins */
+}
+.deliverable-photo {
+    width: 1000px; /* Make the image larger */
+    height: auto; /* Maintain aspect ratio */
+    border: 2px solid #333; /* Add a border for better visibility */
+    border-radius: 10px; /* Add rounded corners */
+    margin: 0; /* Remove any additional margins */
+}
+video {
+    display: block;
+    margin: 10px 0; /* Add space between the video and the list item */
+    border: 2px solid #333; /* Optional: Add a border */
+    border-radius: 10px; /* Optional: Rounded corners */
 }
