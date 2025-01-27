@@ -1,83 +1,63 @@
+/* General Body Styling */
 body {
-    background-color: lavenderblush;
-    font-family: Arial, sans-serif;
+    background-color: #ffe6f2; /* Subtle pink background */
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 20px;
+    line-height: 1.6; /* Improve readability */
+    color: #333; /* Text color */
 }
 
+/* Description Section */
+.description {
+    background-color: #fff; /* White background for contrast */
+    border: 2px solid #cc0052; /* Pink border */
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px; /* Space inside the box */
+    max-width: 1200px; /* Limit the width */
+    margin: 20px auto; /* Center the box with vertical margin */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: center; /* Center-align the text */
+}
+
+.description p {
+    font-size: 20px; /* Increase font size for readability */
+    color: #333; /* Neutral text color */
+    margin: 0; /* Remove default margins */
+    line-height: 1.6; /* Improve readability */
+}
+
+/* Headings */
 h1 {
-    color: #333;
+    color: #cc0052; /* Bold dark pink */
     font-size: 55px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
+/* Links */
 ul {
     list-style-type: none;
     padding: 0;
 }
 
 li {
-    margin: 10px 0;
+    margin: 15px 0; /* Increase spacing between list items */
 }
 
 a {
     text-decoration: none;
     color: #007BFF;
-    font-size: 30px;
+    font-size: 32px;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out; /* Add a hover animation */
 }
 
 a:hover {
+    color: #cc0052; /* Change to pink on hover */
     text-decoration: underline;
-}
-.container {
-    display: flex; /* Arrange text and image horizontally */
-    align-items: flex-start; /* Align the top of the text and image */
-    margin: 20px; /* Add spacing around the container */
-}
-
-.text {
-    margin-right: 25px; /* Slightly increase the space between the text and image */
-}
-
-.image-container {
-    flex-shrink: 0; /* Prevent the image from shrinking */
-}
-
-.right-photo {
-    width: 450px; /* Make the image larger */
-    height: auto; /* Maintain aspect ratio */
-    border: 2px solid #333; /* Add a border for better visibility */
-    border-radius: 10px; /* Add rounded corners */
-    margin: 0; /* Remove any additional margins */
-}
-.deliverables {
-    margin: 20px; /* Add spacing around the section */
-    padding: 20px; /* Add padding inside the section */
-    background-color: #f9f9f9; /* Light background for contrast */
-    border: 1px solid #ccc; /* Optional: Add a border */
-    border-radius: 8px; /* Optional: Rounded corners */
-}
-
-.deliverables h1 {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.deliverables h2 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.deliverables ul {
-    list-style-type: disc; /* Use bullets for the list */
-    margin-left: 20px; /* Indent the list */
-    line-height: 1.6; /* Add spacing between list items */
-}
-
-.deliverables li {
-    font-size: 18px;
-    margin-bottom: 10px; /* Add space between list items */
 }
 .intrinsic-photo {
     width: 300px; /* Make the image larger */
@@ -93,9 +73,171 @@ a:hover {
     border-radius: 10px; /* Add rounded corners */
     margin: 0; /* Remove any additional margins */
 }
+
+/* Container Styling */
+.container {
+    display: flex; /* Arrange text and image horizontally */
+    align-items: flex-start; /* Align the top of the text and image */
+    justify-content: center; /* Center content horizontally */
+    margin: 20px auto;
+    max-width: 1200px; /* Limit the container width */
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+/* Text Section */
+.text {
+    margin-right: 30px;
+}
+
+.text h1 {
+    font-size: 48px; /* Adjust font size for balance */
+}
+
+.text ul {
+    margin-top: 15px;
+}
+
+/* Image Styling */
+.image-container {
+    flex-shrink: 0;
+}
+
+.right-photo {
+    width: 450px;
+    height: auto;
+    border-radius: 15px;
+    border: 3px solid #cc0052; /* Bold pink border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+/* Deliverables Section */
+.deliverables {
+    margin: 20px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 15px;
+    border: 2px solid #cc0052; /* Pink border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 1200px;
+}
+
+.deliverables h1 {
+    font-size: 36px;
+    color: #cc0052;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle text shadow */
+}
+
+.deliverables h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.deliverables ul {
+    list-style-type: disc; /* Bullets */
+    margin-left: 30px;
+    line-height: 1.8;
+    color: #555; /* Softer text color for readability */
+}
+
+.deliverables li {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+/* Video Styling */
 video {
     display: block;
-    margin: 10px 0; /* Add space between the video and the list item */
-    border: 2px solid #333; /* Optional: Add a border */
-    border-radius: 10px; /* Optional: Rounded corners */
+    margin: 20px auto; /* Center the video */
+    border: 2px solid #cc0052; /* Add pink border */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+/* Fancy Hover Effect for Links */
+a {
+    position: relative;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 3px;
+    background-color: #cc0052;
+    transition: width 0.3s ease-in-out;
+}
+
+a:hover::after {
+    width: 100%; /* Add underline effect */
+}
+/* Report Section Styling */
+.report {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Report Heading */
+.report h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #cc0052;
+}
+
+/* Add Spacing for the Report Sections */
+ul li {
+    margin-bottom: 20px;
+}
+.references {
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    border: 2px solid #cc0052; /* Matches other sections */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 1200px;
+}
+
+.references h2 {
+    font-size: 24px;
+    color: #cc0052;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.references ul {
+    list-style-type: disc; /* Bullet points */
+    margin-left: 20px; /* Indentation */
+    line-height: 1.6; /* Line spacing */
+}
+
+.references li {
+    margin-bottom: 8px; /* Space between items */
+    font-size: 14px; /* Smaller text size */
+    color: #555; /* Softer text color */
+}
+
+.references a {
+    font-size: 14px; /* Smaller link text size */
+    color: #007BFF; /* Link color */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.references a:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline; /* Underline on hover */
 }
