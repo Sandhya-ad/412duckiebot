@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignment 1</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assignment1.css">
 </head>
 <body>
     <h1>Assignment 1</h1>
@@ -29,11 +29,17 @@
 
             <li>
                 A video of Duckiebot running the lane following demo
+                <video width="auto" height="600" controls>
+                    <source src="videos/lane_following.MOV" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
                 <div class="report">
                     <h3>Report:</h3>
                     <p>
-                        The lane following demo shows the Duckiebot's ability to detect and stay within lane boundaries using its camera.
-                        The demo required careful calibration of both the camera and the lane-following algorithm to handle curves and straight paths.
+                        This video shows the Duckiebot completing 2 rounds of lane-following demo, where it follows the road on auto-pilot. Often times, the robot had difficulty staying in the lane, especially at turns. This could be due to small errors in camera calibration, delays in motor response, or difficulty detecting the lane in certain lighting conditions. This highlights the importance of proper wheels and camera calibrations.
+                    </p>
+                    <p>
+                        The Duckiebot follows the lane by using its camera to see the road and find the lane markings, like the yellow line in the center or the white lines on the sides. It looks at where it is on the road and adjusts its direction if it starts drifting off the lane. The robot keeps checking and making small movements to stay in the lane.
                     </p>
                 </div>
             </li>
@@ -59,7 +65,7 @@
                 <div class="report">
                     <h3>Report:</h3>
                     <p>
-                        The intrinsics calibratio is essential for correcting camera distortions, ensuring that the camera accurately perceives the real world. This calibration process determines the camera's internal parameters, such as focal length and lens distortion coefficients.
+                        The intrinsics calibration is essential for correcting camera distortions, ensuring that the camera accurately perceives the real world. This calibration process determines the camera's internal parameters, such as focal length and lens distortion coefficients.
 
                         We performed the intrinsics calibration by moving the camera in various angles and distances capturing checkerboard pattern from different prespectives. This ensures that the calibration accurately accounts for the camera's field of view and distortion.Accurate intrinsics calibration is important for reliable lane detection and object recognition in robotics.
                     </p>
