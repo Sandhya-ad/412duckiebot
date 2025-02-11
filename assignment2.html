@@ -25,36 +25,42 @@
                 <div class="report">
                     <h3>1. What is a ROS Node, and what is its role in the ROS ecosystem?</h3>
                     <p>
-                        A <strong>node</strong> in ROS is an executable within a ROS package that performs a specific computational task. Each node is responsible for different functionalities, 
-                        such as controlling the robot’s wheels, path planning, or processing sensor data.  
+                        A <strong>node</strong> in ROS is an executable within a ROS package that performs a specific computational task. It can be thought of as an independent module in a robotic system, 
+                        responsible for a specific task such as sensor data processing, motor control, or decision-making.
                     </p>
                     <p>
-                        ROS nodes communicate with each other, forming a <strong>modular system</strong> where different tasks are managed separately. This structure enhances <strong>organization, 
-                        scalability, and fault tolerance</strong>, ensuring that a failure in one node does not disrupt the entire system. 
+                        ROS nodes enable a <strong>modular architecture</strong> where different functionalities are distributed across multiple independent processes. These nodes communicate with each
+                        other using topics (publish/subscribe) or services (request/response). This structure enhances <strong>organization, scalability, and fault tolerance</strong>, ensuring that a 
+                        failure in one node does not disrupt the entire system. 
+                        Example: A camera node might be responsible for capturing images, while a processing node analyzes those images.
                     </p>
 
                     <h3>2. What are ROS topics, and how do they facilitate communication between nodes?</h3>
                     <p>
-                        <strong>Topics</strong> are named communication channels that enable message exchange between ROS nodes. They use a <strong>publish-subscribe</strong> mechanism, 
-                        allowing nodes to send and receive data asynchronously.  
+                        <strong>ROS Topics</strong> act as a communication channel that allows nodes to exchange messages asynchronously. They follow a publish-subscribe model, meaning Publishers send 
+                        data to a topic and Subscribers receive data from a topic.
                     </p>
                     <p>
-                        A <strong>publisher</strong> node generates and sends data to a specific topic, while any <strong>subscriber</strong> node listening to that topic retrieves the information. 
-                        This loosely coupled communication model ensures <strong>scalability</strong> and <strong>efficiency</strong>, as multiple subscribers can receive the same data without overloading the publisher.  
+                        A <strong>Publisher</strong> node generates and sends data to a specific topic, while any <strong>Subscriber</strong> node listening to that topic retrieves the information.
+                        Topics are loosely coupled, meaning a publisher does not need to know about subscribers and vice versa. This ensures <strong>scalability</strong> and <strong>efficiency</strong>.
+                        Example: A camera node publishes images to the topic /camera/image_raw, while an object detection node subscribes to this topic to process the images.
                     </p>
 
                     <h3>3. What are ROS services, and how do they differ from topics?</h3>
                     <p>
-                        <strong>Services</strong>  are another way that nodes can communicate with each other. They provide a <strong>request-response</strong> type of communication between the nodes. Unlike topics, where a publisher continuously streams messages and subscribers listen, services operate on a request-response model where a node sends a request to a service, and the service responds with the necessary information or action. This synchronous interaction makes services ideal for tasks that require immediate execution and direct response, such as resetting a simulation, retrieving data on demand, or executing a specific commands
+                        <strong>ROS Services</strong>  are another way that nodes can communicate with each other. They provide a <strong>request-response</strong> type of communication between the nodes. 
+                        Unlike topics, where a publisher continuously streams messages and subscribers listen (e.g., sensor data), whereas services operate on a request-response model where a node sends
+                        a request to a service, and the service responds with the necessary information or action (e.g., requesting robot status). This synchronous interaction makes services ideal for 
+                        tasks that require immediate execution and direct response.
                     </p>
 
                     <h3>4. What are ROS messages, and how are they structured for communication?</h3>
                     <p>
-                        <strong>ROS messages</strong> define the structure of data exchanged between nodes through topics, services, and actions. They ensure different nodes can correctly interpret and process the data being transmitted.
+                        <strong>ROS messages</strong> define the structure of data exchanged between nodes through topics, services, and actions. They ensure different nodes can correctly interpret
+                        and process the data being transmitted.
                     </p>
                     <p>
-                        In the case of the <strong>Duckiebot's camera sensor</strong>, the topic used to publish camera frames is:
-                        <br><code>/ROBOT_NAME/camera_node/image/compressed</code>
+                        Example: In the case of the <strong>Duckiebot's camera sensor</strong>, the topic used to publish camera frames is: <br><code>/ROBOT_NAME/camera_node/image/compressed</code>
                     </p>
                     <p>
                         The message type used over this topic is the standard <code>sensor_msgs/CompressedImage</code>, which contains the following fields:
@@ -71,16 +77,33 @@
 
                     <h3>5. What is a ROS bag, and how is it used in data recording and playback?</h3>
                     <p>
-                        A <strong>ROS bag</strong> is a file format for recording and storing messages exchanged between nodes on specific topics. This feature is useful for <strong>debugging, 
-                        analysis, and simulation</strong> of robotic behavior.  
+                        A <strong>ROS bag</strong> is a file format for recording and playback ROS topics. This feature is useful for <strong>debugging, analysis, and simulation</strong> of
+                        robotic behavior without needing real hardware.  
                     </p>
                     <p>
-                        - The <code>rosbag record</code> command captures topic data and stores it in a <strong>bag file</strong>.  
-                        - The <code>rosbag play</code> command replays the recorded messages, simulating real-time execution.  
+                        Writing a rosbag file:
+                        - open a terminal and execute: dts start_gui_tools
+                        - run: ros bag record topic -O move.bag , where topic is your wheel command topic
+                        - open a separate terminal and execute your node using: dts devel run -R csc229XX -L ....
+                        - once, it’s finished, move to your first terminal and do ctrl+C , this will stop recording the bag file.
+                        - now, you have your rosbag file in your docker container. we need to move it locally to your PC now. 
+                    </p>
+
+                    <h3>6. Typical workfloqw for setting up communication between multiple nodes in ROS.</h3>
+                    <p>
+                        Assuming that you have Duckiebots which uses ROS1, and ROS is already installed on them through the Docker which was covered in Exercise 1. Now, create a new ROS-compatible DTProject
+                        - an interface for using ROS with duckiebots which is available at <a href="https://github.com/duckietown/template-ros/">duckietown/template-ros</a>. Now, create a new catkin 
+                        package inside a DTProject because ROS uses the catkin build system to organize and build its software. 
                     </p>
                     <p>
-                        This allows developers to test and refine robot behavior without requiring continuous real-world execution.  
-                    </p>
+                        In a nutshell, catkin organizes entire projects in the so-called catkin workspaces. A catkin workspace is nothing more than a directory containing a bunch of software modules called 
+                        catkin packages. Each software module can contain a set of executables (e.g., binaries, script files) called ROS nodes. ROS nodes interact with one another using two of the most
+                        common communication patterns, called publish-subscribe and request-reply.
+
+                        How and where to create a new Catkin package is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/catkin-packages.html#create-a-new-catkin-package">catkin package creation</a>
+                        
+                        
+                    
                 </div>
             </li>
 
