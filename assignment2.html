@@ -101,7 +101,7 @@
                     robotic system.
                 </p>
                 
-                <p><strong>2. Subscriber Node (MySubscriberNode)</strong></p>
+                <p><strong>Subscriber Node (MySubscriberNode)</strong></p>
                 <p>
                     The <strong>Subscriber node</strong> listens for messages being published on a specific topic. When a new message arrives, the Subscriber node 
                     retrieves and processes it. In this case, the Subscriber reads and logs the message sent by the Publisher.
@@ -173,8 +173,17 @@
                     Your browser does not support the video tag.
                 </video>
                 <div class="report">
-                    <p>The Duckiebot successfully moved forward and backward for 1.25 meters. At first we tried giving equal throttle to both wheels. But our robot kept on going left so we had to vary the speed in 2 wheels for it to go straight </p>
+                    <p>
+                        The Duckiebot successfully moved forward and backward for <strong>1.25 meters</strong>. Initially, we set equal throttle values for both wheels, 
+                        but the robot consistently veered to the left. To correct this, we adjusted the speed of each wheel individually to ensure a straight trajectory.
+                    </p>
+                    <p>
+                        To accurately measure the distance traveled, we used <strong>encoder ticks</strong>. Given that one full wheel rotation corresponds to 
+                        <strong>135 ticks</strong>, we performed the necessary calculations to determine the exact number of ticks required to cover <strong>1.25 meters</strong>. 
+                        This approach gave us better motion control.
+                    </p>
                 </div>
+                
             </li>
 
             <div class="report">
@@ -198,8 +207,8 @@
             
                 <h4>What happens when you increase or decrease the speed?</h4>
                 <p>
-                    - <strong>Increasing the speed</strong> made the Duckiebot move faster, but it also increased the stopping delay, causing the bot to take longer to stop or moving more than expected
-                    - <strong>Decreasing the speed</strong> would make our bot drift on one direction and also if the speed is not enough, bot would not be able to complete the rotation task
+                    <li> <strong>Increasing the speed</strong> made the Duckiebot move faster, but it also increased the stopping delay, causing the bot to take longer to stop or moving more than expected</li>
+                    <li> <strong>Decreasing the speed</strong> would make our bot drift on one direction and also if the speed is not enough, bot would not be able to complete the rotation task</li>
                 </p>
             
                 <h3>2. Rotation Task</h3>
@@ -211,9 +220,10 @@
             
                 <h4>If deviations exist, what could be the cause?</h4>
                 <p>
-                    -<strong>Latency in motor commands:</strong> A slight delay in executing stop commands could result in extra movement.      </p>
-                   <p> - <strong>Wheel friction and drift:</strong> One wheel may have moved faster than the other, causing the Duckiebot to drift slightly.  </p>
-                    <p>- <strong>Uneven surface condition:</strong> Even small inconsistencies in the floor may have contributed to the deviations.  
+                    <li> <strong>Latency in motor commands:</strong> A slight delay in executing stop commands could result in extra movement.    
+                    </li>
+                   <li><strong>Wheel friction and drift:</strong> One wheel may have moved faster than the other, causing the Duckiebot to drift slightly.</li>
+                    <li><strong>Uneven surface condition:</strong> Even small inconsistencies in the floor may have contributed to the deviations.</li>  
                 </p>
             
                 <p>
