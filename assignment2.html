@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 2 - ROS Development and Kinematics</title>
+    <link rel="stylesheet" href="assignment2.css">
+</head>
+<body>
+    <h1>Assignment 2 - ROS Development and Kinematics</h1>
+
+    
+    <section class="description">
+        <p>
+            This assignment focuses on understanding the <strong>Robot Operating System (ROS)</strong> and its core principles in <strong>robot kinematics</strong> and <strong>odometry</strong>. 
+            We implemented ROS nodes, created a publisher and subscriber, wrote code for the duckie to move straight, reverse, rotate and drive in D.
+        </p>
+    </section>
+
+    <section class="deliverables">
+        <h1>Deliverables</h1>
+        <ul>
+            <li>
+                <h2>ROS Wiki Documentation</h2>
+                <div class="report">
+                    <h3>1. What is a ROS Node, and what is its role in the ROS ecosystem?</h3>
+                    <p>
+                        A <strong>node</strong> in ROS is an executable within a ROS package that performs a specific computational task. Each node is responsible for different functionalities, 
+                        such as controlling the robot’s wheels, path planning, or processing sensor data.  
+                    </p>
+                    <p>
+                        ROS nodes communicate with each other, forming a <strong>modular system</strong> where different tasks are managed separately. This structure enhances <strong>organization, 
+                        scalability, and fault tolerance</strong>, ensuring that a failure in one node does not disrupt the entire system. 
+                    </p>
+
+                    <h3>2. What are ROS topics, and how do they facilitate communication between nodes?</h3>
+                    <p>
+                        <strong>Topics</strong> are named communication channels that enable message exchange between ROS nodes. They use a <strong>publish-subscribe</strong> mechanism, 
+                        allowing nodes to send and receive data asynchronously.  
+                    </p>
+                    <p>
+                        A <strong>publisher</strong> node generates and sends data to a specific topic, while any <strong>subscriber</strong> node listening to that topic retrieves the information. 
+                        This loosely coupled communication model ensures <strong>scalability</strong> and <strong>efficiency</strong>, as multiple subscribers can receive the same data without overloading the publisher.  
+                    </p>
+
+                    <h3>3. What are ROS services, and how do they differ from topics?</h3>
+                    <p>
+                        <strong>Services</strong>  are another way that nodes can communicate with each other. They provide a <strong>request-response</strong> type of communication between the nodes. Unlike topics, where a publisher continuously streams messages and subscribers listen, services operate on a request-response model where a node sends a request to a service, and the service responds with the necessary information or action. This synchronous interaction makes services ideal for tasks that require immediate execution and direct response, such as resetting a simulation, retrieving data on demand, or executing a specific commands
+                    </p>
+
+                    <h3>4. What are ROS messages, and how are they structured for communication?</h3>
+                    <p>
+                        <strong>ROS messages</strong> define the structure of data exchanged between nodes through topics, services, and actions. They ensure different nodes can correctly interpret and process the data being transmitted.
+                    </p>
+                    <p>
+                        In the case of the <strong>Duckiebot's camera sensor</strong>, the topic used to publish camera frames is:
+                        <br><code>/ROBOT_NAME/camera_node/image/compressed</code>
+                    </p>
+                    <p>
+                        The message type used over this topic is the standard <code>sensor_msgs/CompressedImage</code>, which contains the following fields:
+                    </p>
+                    <ul>
+                        <li><strong>std_msgs/Header header</strong>: Contains a timestamp and frame reference.</li>
+                        <li><strong>string format</strong>: Specifies the format of the data, such as <code>png</code> or <code>jpeg</code>.</li>
+                        <li><strong>uint8[] data</strong>: An array of bytes containing the actual image in the specified format.</li>
+                    </ul>
+                    <p>
+                        This structured message format allows the Duckiebot to efficiently publish and process camera images, enabling vision-based tasks such as lane detection and object tracking.
+                    </p>
+                    
+
+                    <h3>5. What is a ROS bag, and how is it used in data recording and playback?</h3>
+                    <p>
+                        A <strong>ROS bag</strong> is a file format for recording and storing messages exchanged between nodes on specific topics. This feature is useful for <strong>debugging, 
+                        analysis, and simulation</strong> of robotic behavior.  
+                    </p>
+                    <p>
+                        - The <code>rosbag record</code> command captures topic data and stores it in a <strong>bag file</strong>.  
+                        - The <code>rosbag play</code> command replays the recorded messages, simulating real-time execution.  
+                    </p>
+                    <p>
+                        This allows developers to test and refine robot behavior without requiring continuous real-world execution.  
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                <h2>ROS Implementation Tasks</h2></li>
+            <li>
+                <h3>A screenshot of subscriber info from “Hello from…”</h3>
+                <div class="image-container">
+                    <img src="images/hello_ros.png" alt="ROS Subscriber" class="deliverable-photo">
+                </div>
+                <p>
+                    The <strong>Publisher node</strong> is responsible for sending messages to a specific topic in ROS. It continuously broadcasts a text message to 
+                    inform other nodes about an event, status, or relevant data. In this case, it sends a simple message with the Duckiebot's name. 
+                </p>
+                <p>
+                    The purpose of the Publisher node is to act as a <strong>producer</strong>  ensuring that other nodes in the system can receive and react to its messages. 
+                    This method of communication is useful for continuously updating information, such as sensor readings, status updates, or instructions in a 
+                    robotic system.
+                </p>
+                
+                <p><strong>2. Subscriber Node (MySubscriberNode)</strong></p>
+                <p>
+                    The <strong>Subscriber node</strong> listens for messages being published on a specific topic. When a new message arrives, the Subscriber node 
+                    retrieves and processes it. In this case, the Subscriber reads and logs the message sent by the Publisher.
+                </p>
+                <p>
+                    The purpose of the Subscriber node is to act as a <strong>data_consumer</strong> , ensuring that the information published by other nodes is received and 
+                    interpreted correctly. This model allows for an <strong>efficient and modular</strong> robotic system, where different components communicate asynchronously 
+                    without direct dependencies.
+                </p>
+                
+                <ul>
+                    <li>
+                        Implementing the <strong>Publisher-Subscriber model</strong> in ROS provided valuable insight into how different nodes in a robotic system 
+                        communicate asynchronously.</strong>.
+                    </li>
+                    <li>
+                        This approach allowed us to establish <strong>real-time communication</strong> between nodes, ensuring seamless data flow without dependencies. 
+                        We learned how to design independent nodes that can send and receive messages autonomously, improving overall system reliability.
+                    </li>
+                </ul>
+                
+                
+            <li>
+                <h3>A screenshot of your robot’s camera image view in your annotated and customized
+                    camera image”</h3>
+                <div class="image-container">
+                    <img src="images/grey.png" alt="Grey image" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <p><strong>Explanation:</strong></p>
+                
+                    <p>
+                        Our Duckiebot subscribes to the topic <code>/ROBOT_NAME/camera_node/image/compressed</code>. 
+                        This topic continuously receives <strong>compressed image frames</strong> from the Duckiebot's <strong>front-facing camera</strong> in real-time.
+                    </p>
+                
+                    <p>
+                        When a new image is received, we use <strong>OpenCV</strong> and <strong>cv_bridge</strong> to decode the compressed image from ROS format 
+                        (<code>sensor_msgs/CompressedImage</code>) into an OpenCV-compatible image. This allows us to manipulate and process the image efficiently.
+                    </p>
+                
+                    <p>
+                        After decoding, the <strong>color image</strong> is converted into a <strong>grayscale image</strong> using OpenCV’s <code>cv2.cvtColor</code> function. 
+                        This removes all color information, leaving only intensity values ranging from <strong>black (0) to white (255)</strong>. Grayscale processing is often used in 
+                        <strong>computer vision applications</strong> as it reduces computational complexity while preserving important details like edges and object shapes.
+                    </p>
+                
+                    <p>
+                        We then add the text to the processed image using OpenCV’s <code>cv2.putText</code> function, which places the text near the <strong>bottom-left corner</strong> of the image in <strong>green</strong> color.
+                    </p>
+                
+                    <p>
+                        Finally, the <strong>processed grayscale image</strong> (with the text annotation) is <strong>republished</strong> to the topic 
+                        <code>/ROBOT_NAME/camera_processed/image/compressed</code>, allowing other ROS nodes to <strong>subscribe</strong> and view the modified image instead of the raw camera feed.
+                    </p>
+                
+                    <p>
+                        This process demonstrates real-time <strong>image acquisition, transformation, and annotation</strong> using ROS and OpenCV. It provides a foundation for further 
+                        applications such as <strong>lane detection, feature tracking, and object recognition</strong> in autonomous robotics.
+                    </p>
+                </div>
+                
+            </li>
+
+            <li>
+                <h3>A video of the Duckiebot moving forward and backward for 1.25 meters</h3>
+                <video width="auto" height="600" controls>
+                    <source src="videos/forward_backward.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="report">
+                    <p>The Duckiebot successfully moved forward and backward for 1.25 meters. At first we tried giving equal throttle to both wheels. But our robot kept on going left so we had to vary the speed in 2 wheels for it to go straight </p>
+                </div>
+            </li>
+
+            <div class="report">
+                <h2>Straight-Line Motion and Rotation Task</h2>
+            
+                <h3>1. Straight-Line Motion</h3>
+                <p>
+                    The Duckiebot was programmed to move forward for <strong>1.25 meters</strong> and then reverse back the same distance. While the movement was mostly accurate, after long hours of experimenting with numbers,
+                    some deviations were observed between the <strong>actual and desired location</strong>.
+                </p>
+            
+                <h4>Why is there a difference between the actual and desired location?</h4>
+                <p>
+                    The Duckiebot sometimes moved slightly more . One possible reason is <strong>latency in motor commands</strong>, where the robot takes extra time to stop even after the command is executed.
+                </p>
+            
+                <h4>What speed did you use?</h4>
+                <p>
+                    The speed was initially set to a 0.4 for the throttle to maintain stability. We later adjusted to around 0.5 and that minimized our bot's issue of going lest but it did not fix it 
+                </p>
+            
+                <h4>What happens when you increase or decrease the speed?</h4>
+                <p>
+                    - <strong>Increasing the speed</strong> made the Duckiebot move faster, but it also increased the stopping delay, causing the bot to take longer to stop or moving more than expected
+                    - <strong>Decreasing the speed</strong> would make our bot drift on one direction and also if the speed is not enough, bot would not be able to complete the rotation task
+                </p>
+            
+                <h3>2. Rotation Task</h3>
+            
+                <h4>Did you observe any deviations in the rotation?</h4>
+                <p>
+                   Yes, It would occasionally rotated <strong>more than 90 degrees</strong> before stopping.
+                </p>
+            
+                <h4>If deviations exist, what could be the cause?</h4>
+                <p>
+                    -<strong>Latency in motor commands:</strong> A slight delay in executing stop commands could result in extra movement.      </p>
+                   <p> - <strong>Wheel friction and drift:</strong> One wheel may have moved faster than the other, causing the Duckiebot to drift slightly.  </p>
+                    <p>- <strong>Uneven surface condition:</strong> Even small inconsistencies in the floor may have contributed to the deviations.  
+                </p>
+            
+                <p>
+                    To correct the issue, adjustments were made by slightly reducing speed and fine-tuning the motor power to balance both wheels. 
+                    After experimenting with different values, the correct parameters were found, and the Duckiebot successfully completed the full rotation and stopped as expected.
+                </p>
+            </div>
+            
+
+            <li>
+                <h3>A video of the Duckiebot driving in a “D” shape</h3>
+                <video width="auto" height="600" controls>
+                    <source src="videos/d_shape.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="report">
+                    <p>The Duckiebot followed a “D” shaped trajectory using wheel encoder odometry.</p>
+                </div>
+            </li>
+            <div class="report">
+                <h2>Overall Implementation Summary</h2>
+            
+                <h3>What We Implemented</h3>
+                <p>
+                    In this lab, we implemented three key components of <strong>ROS-based robotic communication and control</strong>:
+                </p>
+                <ul>
+                    <li>A <strong>Publisher-Subscriber model</strong>, where the publisher continuously sent messages, and the subscriber listened and logged the received data.</li>
+                    <li>A <strong>Camera Processing Node</strong>, which converted live camera feed images to grayscale, added annotations, and republished them for visualization.</li>
+                    <li>A <strong>Motion Control Task</strong>, where the Duckiebot moved forward and backward for a set distance and performed a <strong>90-degree rotation</strong>.</li>
+                </ul>
+            
+                <h3>How It Works</h3>
+                <p>
+                    The <strong>Publisher-Subscriber model</strong> demonstrated <strong>asynchronous communication</strong>, allowing different nodes to send and receive messages independently. 
+                    The <strong>camera node</strong> processed images in real-time using <strong>OpenCV</strong>, while the <strong>motion task</strong> involved executing precise motor commands to control the Duckiebot’s movement.
+                </p>
+            
+                <h3>What We Learned</h3>
+                <ul>
+                    <li>How <strong>ROS topics</strong> facilitate real-time message exchange between independent nodes.</li>
+                    <li>The importance of <strong>asynchronous messaging</strong> for scalable robotic systems.</li>
+                    <li>How <strong>image processing</strong> in ROS works using OpenCV and how images can be modified and republished.</li>
+                    <li>The challenges of <strong>accurate movement control</strong> and how to fine-tune parameters for better results.</li>
+                </ul>
+            
+                <h3>Challenges and How We Overcame Them</h3>
+                <ul>
+                    <li><strong>Motion Deviations:</strong> The Duckiebot sometimes moved slightly more or less than expected due to <strong>latency in motor commands</strong>. 
+                        We adjusted the <strong>speed parameters</strong> and tested multiple values until we achieved accurate movement.</li>
+                </ul>
+            
+                <h3>Reflections and Thoughts</h3>
+                <p>
+                    This lab provided a <strong>hands-on understanding</strong> of how <strong>robots communicate, process data, and execute precise movements</strong>. 
+                    The experience of debugging and fine-tuning ROS nodes helped reinforce how real-world robotic applications require <strong>constant testing, adjustments, and optimizations</strong>.
+                </p>
+                <p>
+                    Overall, this lab was an insightful learning experience where we <strong>learned how to control motors, capture and process camera images, and integrate various ROS components to build an efficient robotic system</strong>.
+                </p>
+                
+            <li>
+                <h3>GitHub Repository</h3>
+                <p><a href="https://github.com/Sandhya-ad/my-ros-project">GitHub Repository for this Assignment</a></p>
+            </li>
+        </ul>
+        </div>
+        
+    </section>
+
+    <section class="references">
+        <h2>References</h2>
+        <ul>
+            <li>ROS Documentation: <a href="https://wiki.ros.org">https://wiki.ros.org</a></li>
+            <li>Duckietown Docs: <a href="https://docs.duckietown.com">https://docs.duckietown.com</a></li>
+            <li>ChatGPT: Used to understand some topics, debug and check grammar in the report</li>
+        </ul>
+    </section>
+        <h1>By: Sandhya Adhikari and Fumanpreet Singh</h1>
+
+    <a href="index.html">Back to Assignments</a>
+</body>
+</html>

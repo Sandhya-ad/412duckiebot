@@ -1,0 +1,101 @@
+/* General Body Styling */
+body {
+    background-color: #ffe6f2; /* Subtle pink background */
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Headings */
+h1 {
+    color: #cc0052;
+    font-size: 45px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Description Section */
+.description {
+    background-color: #fff;
+    border: 2px solid #cc0052;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Deliverables Section */
+.deliverables {
+    margin: 20px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 15px;
+    border: 2px solid #cc0052;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+}
+
+.deliverables h1 {
+    font-size: 36px;
+    color: #cc0052;
+    text-align: center;
+}
+
+/* Image Styling */
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.deliverable-photo {
+    width: 1000px;
+    height: auto;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+/* Report Section */
+.report {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Video Styling */
+video {
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #cc0052;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* References */
+.references {
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    border: 2px solid #cc0052;
+    max-width: 1200px;
+}
+
+/* Links */
+a {
+    font-size: 16px;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #cc0052;
+}
