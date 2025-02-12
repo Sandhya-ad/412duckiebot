@@ -108,6 +108,18 @@
                         ROS implements the publish-subscribe pattern using ROS Publishers and ROS Subscribers. The general concept is simple, a publisher has the job of publishing messages from a ROS node into the ROS network for other nodes to receive (using ROS Subscribers).
                         How and where to create Publisher ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/publisher.html">publisher node creation</a>. Similarly, for Subscribers, the general concept is simple: a subscriber has the job of listening for messages about a specific topic that
                         are published by other ROS nodes (using ROS Publishers) over a ROS network. How and where to create Subscriber ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/subscriber.html">subscirber node creation</a>
+                        <br>
+                        We now need to the tell our file system that we want our file my_publisher_node.py (any publisher node) and my_subsciber_node.py (any subscriber node) be treated as an executable file. We do so by running the following command from the root of our DTProject: <code>chmod +x ./packages/my_package/src/my_publisher_node.py</code>
+                        and <code>chmod +x ./packages/my_package/src/my_subscriber_node.py</code>
+                    </p>
+                    <p>
+                        Everything in Duckietown runs inside Docker containers. This means that we also need to tell Docker what to run when the container is started. In this case, we want our new ROS publisher node to run.
+                        Each DTProject compiles into a single Docker image, but we can declare multiple start “behaviors” for the same project/image so that the same project can serve multiple (though related) purposes. We can use launchers to accomplish this, now we have create a new launcher to allow for this new start behavior.
+                        <br>
+                        To Launch the Publisher node or Subscriber node, run the following command on terminal: 
+                        <br><code>dts devel build -H ROBOT_NAME -f</code>
+                        <br><code>dts devel run -H ROBOT_NAME -L my-publisher</code>
+                        
                     </p>
                     
                 </div>
