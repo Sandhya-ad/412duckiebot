@@ -109,8 +109,8 @@
                         How and where to create Publisher ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/publisher.html">publisher node creation</a>. Similarly, for Subscribers, the general concept is simple: a subscriber has the job of listening for messages about a specific topic that
                         are published by other ROS nodes (using ROS Publishers) over a ROS network. How and where to create Subscriber ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/subscriber.html">subscirber node creation</a>
                         <br>
-                        We now need to the tell our file system that we want our file my_publisher_node.py (any publisher node) and my_subsciber_node.py (any subscriber node) be treated as an executable file. We do so by running the following command from the root of our DTProject: <code>chmod +x ./packages/my_package/src/my_publisher_node.py</code>
-                        and <code>chmod +x ./packages/my_package/src/my_subscriber_node.py</code>
+                        We now need to the tell our file system that we want our file my_publisher_node.py (any publisher node) and my_subsciber_node.py (any subscriber node) be treated as an executable file. We do so by running the following command from the root of our DTProject:
+                        <br><code>chmod +x ./packages/my_package/src/my_publisher_node.py</code>  and <code>chmod +x ./packages/my_package/src/my_subscriber_node.py</code>
                     </p>
                     <p>
                         Everything in Duckietown runs inside Docker containers. This means that we also need to tell Docker what to run when the container is started. In this case, we want our new ROS publisher node to run.
@@ -133,13 +133,10 @@
                     <img src="images/publisher.png" alt="ROS Subscriber" class="deliverable-photo">
                 </div>
                 <p>
-                    The <strong>Publisher node</strong> is responsible for sending messages to a specific topic in ROS. It continuously broadcasts a text message to 
-                    inform other nodes about an event, status, or relevant data. In this case, it sends a simple message with the Duckiebot's name. 
-                </p>
-                <p>
-                    The purpose of the Publisher node is to act as a <strong>producer</strong>  ensuring that other nodes in the system can receive and react to its messages. 
-                    This method of communication is useful for continuously updating information, such as sensor readings, status updates, or instructions in a 
-                    robotic system.
+                    In this task, the <strong>Publisher node</strong> is responsible for sending messages to a topic named <code>chatter</code> in ROS. ROS node named my_publisher_node, which is of 
+                    type NodeType.GENERIC. This node type is used for general-purpose nodes that do not fit into specialized categories like perception or control. The node retrieves the vehicle name
+                    from the environment variable VEHICLE_NAME and publishes messages to the chatter topic at a rate of 1 Hz (once per second). The rospy.spin() function is included to keep the 
+                    process alive, even though the run() method already handles the looping. This ensures that the node remains active and can continuously publish messages until ROS is shut down.
                 </p>
                 
                 <p><strong>Subscriber Node (MySubscriberNode)</strong></p>
@@ -147,13 +144,11 @@
                     <img src="images/subscriber.png" alt="ROS Subscriber" class="deliverable-photo">
                 </div>
                 <p>
-                    The <strong>Subscriber node</strong> listens for messages being published on a specific topic. When a new message arrives, the Subscriber node 
-                    retrieves and processes it. In this case, the Subscriber reads and logs the message sent by the Publisher.
-                </p>
-                <p>
-                    The purpose of the Subscriber node is to act as a <strong>data_consumer</strong> , ensuring that the information published by other nodes is received and 
-                    interpreted correctly. This model allows for an <strong>efficient and modular</strong> robotic system, where different components communicate asynchronously 
-                    without direct dependencies.
+                    In this task, the <strong>Subscriber node</strong> listens for messages being published on a topic named <code>chatter</code> in ROS. ROS node named my_subscriber_node, which is of type 
+                    NodeType.GENERIC. The GENERIC node type is used for general-purpose nodes that do not fall under specific categories like control or sensing. The node subscribes to the chatter topic,
+                    which publishes messages of type String. When a new message arrives, the callback function is triggered, logging the received message. The rospy.spin() function ensures that the node
+                    keeps running, continuously listening for messages on the topic and executing the callback function each time a message is received. This allows for repeated processing of incoming 
+                    data without the script terminating.
                 </p>
                 
                 <ul>
