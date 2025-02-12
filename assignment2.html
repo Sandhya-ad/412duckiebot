@@ -286,6 +286,8 @@
                             <li><strong>Asymmetry in the Chassis:</strong> Structural misalignment or differences in the positioning of the wheels on the chassis could lead to an uneven turning radius, resulting in deviations during rotation.</li>
                             <li><strong>Environmental Factors:</strong> External factors such as uneven surfaces, obstacles, or floor conditions could affect the robot’s movement and cause deviations in the expected rotation.</li>
                         </ul>
+                        <h3> Does your program exit properly after you nish all the above tasks?</h3>
+                        <p>Yes, the program exits properly after completing all the tasks. Once the desired rotations are finished and the tick count condition is met, the bot stops by publishing a zero-velocity command to the wheels. This ensures that the Duckiebot is stabilized before the program ends. Afterward, a clean shutdown procedure is initiated with the <code>rospy.signal_shutdown()</code> function, which gracefully shuts down the node. This release of resources ensures that no processes or subscriptions are left running, and the program terminates without leaving any residual tasks.</p>
                     </p>
                 </div>
                 
