@@ -173,33 +173,26 @@
                     <p><strong>Explanation:</strong></p>
                 
                     <p>
-                        Our Duckiebot subscribes to the topic <code>/ROBOT_NAME/camera_node/image/compressed</code>. 
-                        This topic continuously receives <strong>compressed image frames</strong> from the Duckiebot's <strong>front-facing camera</strong> in real-time.
+                        The <strong>camera_reader_node</strong> is a ROS visualization node that processes real-time image data from the Duckiebot’s front-facing camera. 
+                        It subscribes to the topic <code>/ROBOT_NAME/camera_node/image/compressed</code>, which continuously receives compressed image frames in ROS format 
+                        (<code>sensor_msgs/CompressedImage</code>). Using CvBridge, the node converts the compressed ROS image into an OpenCV-compatible format, enabling efficient image processing.
                     </p>
                 
                     <p>
-                        When a new image is received, we use <strong>OpenCV</strong> and <strong>cv_bridge</strong> to decode the compressed image from ROS format 
-                        (<code>sensor_msgs/CompressedImage</code>) into an OpenCV-compatible image. This allows us to manipulate and process the image efficiently.
+                        Once decoded, the color image is converted into a grayscale image using <code>cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)</code>, removing color information while preserving 
+                        essential intensity details. Grayscale processing is widely used in computer vision as it reduces computational complexity while maintaining crucial edge and shape information. 
+                        The node then overlays annotated text on the processed image using <code>cv2.putText()</code>, positioning it near the bottom-left corner in green.
                     </p>
                 
                     <p>
-                        After decoding, the <strong>color image</strong> is converted into a <strong>grayscale image</strong> using OpenCV’s <code>cv2.cvtColor</code> function. 
-                        This removes all color information, leaving only intensity values ranging from <strong>black (0) to white (255)</strong>. Grayscale processing is often used in 
-                        <strong>computer vision applications</strong> as it reduces computational complexity while preserving important details like edges and object shapes.
-                    </p>
-                
-                    <p>
-                        We then add the text to the processed image using OpenCV’s <code>cv2.putText</code> function, which places the text near the <strong>bottom-left corner</strong> of the image in <strong>green</strong> color.
-                    </p>
-                
-                    <p>
-                        Finally, the <strong>processed grayscale image</strong> (with the text annotation) is <strong>republished</strong> to the topic 
-                        <code>/ROBOT_NAME/camera_processed/image/compressed</code>, allowing other ROS nodes to <strong>subscribe</strong> and view the modified image instead of the raw camera feed.
-                    </p>
-                
-                    <p>
-                        This process demonstrates real-time <strong>image acquisition, transformation, and annotation</strong> using ROS and OpenCV. It provides a foundation for further 
-                        applications such as <strong>lane detection, feature tracking, and object recognition</strong> in autonomous robotics.
+                        After processing, the modified grayscale image is republished to the custom topic <code>/ROBOT_NAME/camera_processed/image/compressed</code>, allowing other ROS nodes to access 
+                        and utilize the transformed data. The callback function ensures continuous image processing, while <code>rospy.spin()</code> keeps the node running, actively listening for new image messages.
+                        <br>
+                        Additionally, the node <strong>publishes this new annotated image on a custom topic</strong>, enabling other nodes 
+                        to subscribe and process the modified image. To visualize the output, we use <strong>rqt_image_view</strong>, 
+                        a ROS tool that allows real-time viewing of image topics. Using <code>rqt_image_view</code>, we can display 
+                        the camera feed from our custom topic and ensure that the image processing steps, such as grayscale conversion 
+                        and annotation, are correctly applied.
                     </p>
                 </div>
                 
