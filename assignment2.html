@@ -262,7 +262,12 @@
                 </video>
                 <div class="report">
                     <p>
-                        Need to explain
+                        The WheelEncoderReaderNode is implemented as a subclass of DTROS, a specialized ROS class designed for Duckietown robots. This node is assigned the NodeType.PERCEPTION classification, which is ideal for processing sensor data, such as wheel encoder readings. Choosing this node type is crucial for ensuring precise movement tracking, particularly for tasks requiring accurate control of the Duckiebot’s orientation, such as rotating 90 degrees clockwise and counterclockwise. The node subscribes to two topics, /left_wheel_encoder_node/tick and /right_wheel_encoder_node/tick, which provide real-time wheel encoder data using the WheelEncoderStamped message type. These messages contain essential information such as encoder resolution, tick count, and direction, allowing the system to monitor movement with high accuracy.
+                        <br>
+                        In addition to subscribing to encoder data, the node publishes wheel commands to /wheels_driver_node/wheels_cmd using the WheelsCmdStamped message type. This allows direct control over wheel velocities, enabling the Duckiebot to execute controlled movements. The use of separate callback functions, callback_left and callback_right, ensures that each wheel's data is processed independently. This approach accounts for differences in resolution and synchronization between the two wheels, which is vital for maintaining balanced and predictable motion. The implementation of two distinct callbacks prevents data loss and improves the reliability of movement tracking.
+                        <br>
+                        The rospy.Rate(1) command ensures that commands are published at a rate of 1 Hz, meaning one update per second. This controlled rate prevents excessive command flooding while maintaining smooth motion execution. Another rate, rospy.Rate(20), is used for processing messages at a higher frequency to ensure timely updates.
+                    </p>
                 </div>
                 
             </li>
