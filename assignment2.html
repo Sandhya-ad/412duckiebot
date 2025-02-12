@@ -225,6 +225,32 @@
                         moving forward and backward seamlessly. This approach ensures accurate motion tracking and enables controlled movements such as straight-line driving and rotations based on
                         encoder feedback. The use of encoder-based tick counting allows for deterministic control, crucial for tasks like calibration and precise navigation.
                     </p>
+
+                    <ul>
+                        <li>
+                            <strong>Why is there a difference between the actual and desired location?</strong>
+                            <ul>
+                                <li>Wheel slippage and uneven surfaces can cause discrepancies.</li>
+                                <li>Encoder inaccuracies may lead to slight deviations.</li>
+                                <li>Latency in command execution affects precise movement.</li>
+                                <li>Variations in motor response time can contribute to errors.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>What speed did you use?</strong>
+                            <ul>
+                                <li>The speed was set using <code>THROTTLE_LEFT = 0.545</code> and <code>THROTTLE_RIGHT = 0.5</code>.</li>
+                                <li>Each wheel runs at approximately 50% throttle. The minor difference between left and right throttle is maintain the straight line motion.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>What happens when you increase or decrease the speed?</strong>
+                            <ul>
+                                <li><strong>Increasing speed:</strong> The Duckiebot reaches the target distance faster but may overshoot the distance and a little jerk during transition phase can deflect it.</li>
+                                <li><strong>Decreasing speed:</strong> The Duckiebot moves more slowly, improving precision, but it may struggle to overcome small obstacles or get stuck due to lower momentum.</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
                 
             </li>
