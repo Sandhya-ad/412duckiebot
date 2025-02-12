@@ -442,6 +442,46 @@
                         The LED color transitions help visualize the different motion states of the Duckiebot, ensuring clear feedback 
                         on when it is actively moving versus when it is in a stationary state.
                     </p>
+                    <h4>LED State Functionality</h4>
+                        <p>
+                            The LED indicators provide <strong>visual feedback</strong> on the Duckiebot’s motion states throughout the execution of the <strong>D-shaped path</strong>.
+                        </p>
+
+                        <ul>
+                            <li><strong>🔳 White LED (Startup Phase - 2 seconds):</strong>
+                                <ul>
+                                    <li>At the very beginning, the LEDs turn <strong>white for 2 seconds</strong>.</li>
+                                    <li>This ensures that if the Duckiebot’s LEDs were already <strong>red</strong>, we can still observe the transition when stopping later.</li>
+                                </ul>
+                            </li>
+
+                            <li><strong>🔴 Red LED (Stop - 5 seconds):</strong>
+                                <ul>
+                                    <li>The Duckiebot stops and holds its position for <strong>5 seconds</strong>.</li>
+                                    <li>The LEDs turn <strong>red</strong>, indicating that the robot is in a stationary state.</li>
+                                </ul>
+                            </li>
+
+                            <li><strong>🔵 Blue LED (Moving - Tracing the "D" Shape):</strong>
+                                <ul>
+                                    <li>As the Duckiebot starts moving to trace the <strong>D-shaped path</strong>, the LEDs turn <strong>blue</strong>.</li>
+                                    <li>This helps indicate that the robot is actively navigating the trajectory.</li>
+                                </ul>
+                            </li>
+
+                            <li><strong>🔴 Red LED (Final Stop - 5 seconds):</strong>
+                                <ul>
+                                    <li>At the <strong>end of the "D" shape</strong>, when the Duckiebot completes its rotation and returns to the starting position, the LEDs turn <strong>red again</strong>.</li>
+                                    <li>The robot stops for <strong>another 5 seconds</strong> before finishing the task.</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <p>
+                            This LED transition system provides a <strong>clear visual representation</strong> of when the Duckiebot is <strong>starting, stopping, and moving</strong>, 
+                            making it easier to track its current state at any given moment.
+                        </p>
+
                 </div>
             </li>
             
