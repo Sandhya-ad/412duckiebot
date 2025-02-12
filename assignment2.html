@@ -229,6 +229,48 @@
                 </div>
                 
             </li>
+            <li>
+                <h3>ROSBag Plot</h3>
+                <div class="image-container">
+                    <img src="images/straight_plot.png" alt="ROSBag Plot" class="deliverable-photo">
+                </div>
+                
+                <div class="report">
+                    <h4>How We Plotted the ROSBag Data</h4>
+                    <p>
+                        To analyze the motion of the Duckiebot, we recorded the relevant encoder messages in a ROSBag file while executing 
+                        straight-line motion and rotation tasks. The following steps were followed:
+                    </p>
+                    <ul>
+                        <li>We ran the command to start recording ROSBag data:
+                            <br><code>rosbag record -O move.bag /ROBOT_NAME/wheel_driver_node/wheels_cmd</code></li>
+                        <li>Executed the movement command while ROSBag was actively recording.</li>
+                        <li>Once the movement was completed, we stopped recording using <code>Ctrl + C</code>.</li>
+                        <li>Extracted and analyzed the recorded data by replaying the bag file.</li>
+                        <li>Used a Python script to extract encoder readings and plot the motion trajectory.</li>
+                    </ul>
+            
+                    <h4>What the ROSBag Plot Shows</h4>
+                    <p>
+                        The plot generated from the ROSBag data provides a visualization of the Duckiebot’s movement based on **wheel encoder ticks**.
+                        It shows:
+                    </p>
+                    <ul>
+                        <li>The <strong>distance traveled</strong> based on encoder readings.</li>
+                        <li>Variations in motion, including small deviations due to motor differences.</li>
+                        <li>The effect of different wheel speeds on trajectory accuracy.</li>
+                    <p>
+                        From the plot, we could observe slight deviations due to latency in motor commands, uneven flooring**, and 
+                        wheel friction differences**, which were later fine-tuned for better accuracy.
+                    </p>
+            
+                    <h4>Reference</h4>
+                    <ul>
+                        <li>ChatGPT: Used for clarifications on ROSBag recording, plotting methods, and general debugging.</li>
+                    </ul>
+                </div>
+            </li>
+            
 
             <div class="report">
                 <h2>Straight-Line Motion and Rotation Task Explanation</h2>
