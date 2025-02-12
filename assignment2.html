@@ -353,48 +353,32 @@
                 
                 <ul>
                     <li>
-                        The measured <strong>wheel circumference</strong> is <strong>21 cm</strong>.
+                        The measured <strong>wheel circumference</strong> is <strong>20.1 cm</strong>.
                     </li>
                     <li>
-                        From our measurements, we found that <strong>one full wheel rotation (21 cm traveled) corresponds to 135 encoder ticks</strong>.
+                        From our measurements, we found that <strong>one full wheel rotation (almost 20 cm traveled) corresponds to 135 encoder ticks</strong>.
                     </li>
                     <li>
                         To determine how many <strong>ticks correspond to 1 cm</strong>, we calculated:
                         <br>
-                        <code>Ticks per cm = 135 / 21 ≈ 6.43 ticks/cm</code>
+                        <code>Ticks per cm = 135 / 20 ≈ 6.43 ticks/cm</code>
                     </li>
                     <li>
                         To find the number of <strong>ticks needed to travel 125 cm</strong>, we used:
                         <br>
-                        <code>Required Ticks = (135 / 21) * 125 ≈ 805 ticks</code>
+                        <code>Required Ticks = (135 / 20.1) * 125 ≈ 840 ticks</code>
                     </li>
                 </ul>
                 
                 <p>
-                    Thus, the Duckiebot needed to move approximately <strong>805 ticks forward</strong> and then <strong>805 ticks in reverse</strong>.
-                    To account for the motor command delay, we have to reduce the few ticks and set it to 750
+                    Thus, the Duckiebot needed to move approximately <strong>840 ticks forward</strong> and then <strong>840 ticks in reverse</strong>.
+                    To account for the motor command delay, we have to reduce the few ticks and set it to 750 which turns out to be the ticks required to travel 125cm (measured using tape).
                 </p>
                 <p>
                     Initially, we set equal throttle values for both wheels, but the robot veered slightly to the left. To correct this, we adjusted the 
                     <strong>left wheel throttle to 0.545</strong> and the <strong>right wheel throttle to 0.5</strong>, ensuring a straighter trajectory.
                 </p>
-                
             
-                <h4>Why is there a difference between the actual and desired location?</h4>
-                <p>
-                    The Duckiebot sometimes moved slightly more . One possible reason is <strong>latency in motor commands</strong>, where the robot takes extra time to stop even after the command is executed.
-                </p>
-            
-                <h4>What speed did you use?</h4>
-                <p>
-                    The speed was initially set to a 0.4 for the throttle to maintain stability. We later adjusted to around 0.5 for the right throtle and 0.545 for the left throttle and that minimized our bot's issue of going lest but it did not fix it entirely.
-                </p>
-            
-                <h4>What happens when you increase or decrease the speed?</h4>
-                <p>
-                    <li> <strong>Increasing the speed</strong> made the Duckiebot move faster, but it also increased the stopping delay, causing the bot to take longer to stop or moving more than expected</li>
-                    <li> <strong>Decreasing the speed</strong> would make our bot drift on one direction and also if the speed is not enough, bot would not be able to complete the rotation task</li>
-                </p>
             
                 <h3>2. Rotation Task</h3>
                 <p>
