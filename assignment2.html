@@ -82,27 +82,33 @@
                     </p>
                     <p>
                         Writing a rosbag file:
-                        - open a terminal and execute: dts start_gui_tools
-                        - run: ros bag record topic -O move.bag , where topic is your wheel command topic
-                        - open a separate terminal and execute your node using: dts devel run -R csc229XX -L ....
-                        - once, it’s finished, move to your first terminal and do ctrl+C , this will stop recording the bag file.
-                        - now, you have your rosbag file in your docker container. we need to move it locally to your PC now. 
+                        <ul>
+                            <li>Open a terminal and execute: <code>dts start_gui_tools</code></li>
+                            <li>Run: <code>rosbag record topic -O move.bag</code>, where <code>topic</code> is your wheel command topic.</li>
+                            <li>Open a separate terminal and execute your node using: <code>dts devel run -R csc229XX -L ....</code></li>
+                            <li>Once it’s finished, go back to your first terminal and press <code>Ctrl + C</code> to stop recording the bag file.</li>
+                            <li>Now, you have your ROSBag file inside your Docker container. You need to move it locally to your PC.</li>
+                        </ul>
+
                     </p>
 
-                    <h3>6. Typical workfloqw for setting up communication between multiple nodes in ROS.</h3>
+                    <h3>6. Typical workflow for setting up communication between multiple nodes in ROS.</h3>
                     <p>
                         Assuming that you have Duckiebots which uses ROS1, and ROS is already installed on them through the Docker which was covered in Exercise 1. Now, create a new ROS-compatible DTProject
-                        - an interface for using ROS with duckiebots which is available at <a href="https://github.com/duckietown/template-ros/">duckietown/template-ros</a>. Now, create a new catkin 
-                        package inside a DTProject because ROS uses the catkin build system to organize and build its software. 
+                        - an interface for using ROS with duckiebots which is available at <a href="https://github.com/duckietown/template-ros/">duckietown/template-ros</a>. 
                     </p>
                     <p>
-                        In a nutshell, catkin organizes entire projects in the so-called catkin workspaces. A catkin workspace is nothing more than a directory containing a bunch of software modules called 
+                         Now, create a new catkin package inside a DTProject because ROS uses the catkin build system to organize and build its software. In a nutshell, catkin organizes entire projects in the so-called catkin workspaces. A catkin workspace is nothing more than a directory containing a bunch of software modules called 
                         catkin packages. Each software module can contain a set of executables (e.g., binaries, script files) called ROS nodes. ROS nodes interact with one another using two of the most
                         common communication patterns, called publish-subscribe and request-reply.
 
-                        How and where to create a new Catkin package is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/catkin-packages.html#create-a-new-catkin-package">catkin package creation</a>
-                        
-                        
+                        How and where to create a new Catkin package is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/catkin-packages.html#create-a-new-catkin-package">catkin package creation</a>.  
+                    </p>
+                    <p>
+                        ROS implements the publish-subscribe pattern using ROS Publishers and ROS Subscribers. The general concept is simple, a publisher has the job of publishing messages from a ROS node into the ROS network for other nodes to receive (using ROS Subscribers).
+                        How and where to create Publisher ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/publisher.html">publisher node creation</a>. Similarly, for Subscribers, the general concept is simple: a subscriber has the job of listening for messages about a specific topic that
+                        are published by other ROS nodes (using ROS Publishers) over a ROS network. How and where to create Subscriber ROS Node is available at <a href="https://docs.duckietown.com/daffy/devmanual-software/beginner/ros/subscriber.html">subscirber node creation</a>
+                    </p>
                     
                 </div>
             </li>
