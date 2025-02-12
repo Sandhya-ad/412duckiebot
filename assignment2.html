@@ -493,6 +493,59 @@
                     <p>
                         The state logic is implemented in two main states: state_1 and state_2 (state_2 includes state_3). State 1 is designed to keep the robot stationary for 5 seconds while setting the LED to red, effectively halting all movement and ensuring the robot is in a known state before starting the path. In State 2, the robot begins a trajectory along a "D" shaped path. It updates the wheel velocities based on encoder ticks, which represent the movement of the wheels. The robot moves forward for a specific distance (1.2 meters), stops, rotates by 90 degrees clockwise, and then proceeds along other segments of the path. During this process, the encoder values are continuously monitored in the callbacks, ensuring that the robot moves the exact distance required. These values are used to stop the robot when the target distance is achieved. The states are designed to control the robot's motion step-by-step, using feedback from the encoders to ensure precision in distance and rotational movement. This feedback loop ensures that the robot operates reliably, adjusting its motion based on real-time sensor data.
                     </p>
+                    <p>The robot starts by moving straight for 1.2 meters. It uses the following velocity parameters:</p>
+                    <ul>
+                        <li><strong>vel_left:</strong> 0.33 (50% throttle forward)</li>
+                        <li><strong>vel_right:</strong> 0.33 (50% throttle forward)</li>
+                    </ul>
+                    <p>The initial tick count is recorded, and a loop is used to track the difference between the current and initial ticks. The robot moves forward until both left and right ticks reach 720, which corresponds to 1.2 meters of movement.</p>
+                    
+                    <h2>2. Rotation 90 Degrees Clockwise</h2>
+                    <p>After moving straight, the robot rotates 90 degrees clockwise using the following parameters:</p>
+                    <ul>
+                        <li><strong>THROTTLE_LEFT:</strong> 0.5 (50% throttle forward)</li>
+                        <li><strong>THROTTLE_RIGHT:</strong> 0 (stopped)</li>
+                    </ul>
+                    <p>The robot is set to rotate by publishing a message that adjusts the left wheel's speed. It rotates until the left wheel ticks change by 99 ticks, corresponding to a 90-degree turn.</p>
+                
+                    <h2>3. Move Straight for 0.92m</h2>
+                    <p>Next, the robot moves forward for 0.92 meters using the following parameters:</p>
+                    <ul>
+                        <li><strong>vel_left:</strong> 0.33 (50% throttle forward)</li>
+                        <li><strong>vel_right:</strong> 0.30 (50% throttle forward)</li>
+                    </ul>
+                    <p>The initial ticks are recorded again, and the robot continues to move straight until both left and right ticks reach 500, completing 0.92 meters.</p>
+                
+                    <h2>4. Curve Right</h2>
+                    <p>The robot now makes a right curve using the following parameters:</p>
+                    <ul>
+                        <li><strong>THROTTLE_LEFT:</strong> 0.47 (50% throttle forward)</li>
+                        <li><strong>THROTTLE_RIGHT:</strong> 0.2 (reduced throttle)</li>
+                    </ul>
+                    <p>The robot's wheels are set to different speeds, and it curves right by moving forward until the left wheel ticks reach 240 and the right wheel ticks reach 120, completing the curve.</p>
+                
+                    <h2>5. Move Straight for 0.61m</h2>
+                    <p>The robot moves forward again for 0.61 meters using the following parameters:</p>
+                    <ul>
+                        <li><strong>vel_left:</strong> 0.33 (50% throttle forward)</li>
+                        <li><strong>vel_right:</strong> 0.30 (50% throttle forward)</li>
+                    </ul>
+                    <p>Once again, the robot tracks its movement based on the ticks, moving straight until it reaches the required tick count.</p>
+                
+                    <h2>6. Final Curve Right</h2>
+                    <p>The robot makes a final curve right with the following parameters:</p>
+                    <ul>
+                        <li><strong>THROTTLE_LEFT:</strong> 0.48 (50% throttle forward)</li>
+                        <li><strong>THROTTLE_RIGHT:</strong> 0.2 (reduced throttle)</li>
+                    </ul>
+                    <p>Similar to the previous curve, the robot moves until the left wheel ticks reach 240 and the right wheel ticks reach 120, completing the turn.</p>
+                
+                    <h2>7. Final Movement and Rotation</h2>
+                    <p>The robot moves forward for 0.92 meters and then performs another 90-degree clockwise rotation using the same parameters as the previous rotation. It stops once the final rotation is complete.</p>
+                
+                    <h2>Conclusion</h2>
+                    <p>After completing the full path tracing the letter "D", the robot stops and changes the LED color to red, signaling the end of the path tracing process.</p>
+
                     
                 </div>
             </li>
