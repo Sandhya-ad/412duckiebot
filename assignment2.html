@@ -426,11 +426,7 @@
             <li>
                 <h3>A video of the Duckiebot driving in a “D” shape</h3>
                 <video width="auto" height="600" controls>
-                    <source src="videos/IMG_3980.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <video width="auto" height="600" controls>
-                    <source src="videos/IMG_3982.mp4" type="video/mp4">
+                    <source src="videos/d_shape.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
                 <div class="report">
@@ -485,7 +481,15 @@
                             This LED transition system provides a <strong>clear visual representation</strong> of when the Duckiebot is <strong>starting, stopping, and moving</strong>, 
                             making it easier to track its current state at any given moment.
                         </p>
-
+                    
+                    <h4>Tracing "D"</h4>
+                    <p>
+                        To achieve Duckiebot's trajectory control, several components and functions are used to manage the robot's movement and states, utilizing callback functions and node types effectively. The node is defined with the type NodeType.PERCEPTION, which indicates that the node is primarily responsible for processing sensory input (such as encoder data from the wheels) to control the robot's movement. The callback functions, callback_left and callback_right, listen to the left and right wheel encoder topics, respectively. These functions process data received from wheel encoders, updating internal variables like _ticks_left and _ticks_right, which track the position of the wheels. The callback functions are critical in ensuring the robot's behavior is adaptive. By using separate callbacks for each wheel, the system can independently track the progress of each wheel, adjusting the robot's trajectory if discrepancies between the two wheels occur. The use of callbacks here ensures real-time responsiveness, allowing the robot to adjust its behavior dynamically as it receives data about its wheel movement.
+                    </p>
+                    <p>
+                        The state logic is implemented in two main states: state_1 and state_2 (state_2 includes state_3). State 1 is designed to keep the robot stationary for 5 seconds while setting the LED to red, effectively halting all movement and ensuring the robot is in a known state before starting the path. In State 2, the robot begins a trajectory along a "D" shaped path. It updates the wheel velocities based on encoder ticks, which represent the movement of the wheels. The robot moves forward for a specific distance (1.2 meters), stops, rotates by 90 degrees clockwise, and then proceeds along other segments of the path. During this process, the encoder values are continuously monitored in the callbacks, ensuring that the robot moves the exact distance required. These values are used to stop the robot when the target distance is achieved. The states are designed to control the robot's motion step-by-step, using feedback from the encoders to ensure precision in distance and rotational movement. This feedback loop ensures that the robot operates reliably, adjusting its motion based on real-time sensor data.
+                    </p>
+                    
                 </div>
             </li>
             
