@@ -402,10 +402,11 @@
                         <li>
                             The formula used for determining tick count:
                             <br>
-                            <code>Required Ticks for 90° Rotation = Experimentally found ≈ 35 ticks</code>
+                            <code>Required Ticks for 90° Rotation = 1/4 of circumference of cirle with radius 12cm (wheel base of bot) = 20.11 / 4 ≈ 5cm</code>
+                            <code>135 ticks to make one rotation by wheel of radius 3.2cm, in order to cover 5cm by wheels it requires 35 ticks</code>
                         </li>
                         <li>
-                            To rotate back counterclockwise to <strong>0 degrees</strong>, the l<strong> wheel moved in reverse for the same 35 ticks</strong>
+                            To rotate back counterclockwise to <strong>0 degrees</strong>, the <strong> wheel moved in reverse for the same 35 ticks</strong>
                         </li>
                     </ul>
 
@@ -419,25 +420,6 @@
                         To correct this, adjustments were made by fine-tuning the motor power and ensuring the **right wheel remained completely still** 
                         during the rotation.
                     </p>
-
-                            
-                <h4>Did you observe any deviations in the rotation?</h4>
-                <p>
-                   Yes, It would occasionally rotated <strong>more than 90 degrees</strong> before stopping.
-                </p>
-            
-                <h4>If deviations exist, what could be the cause?</h4>
-                <p>
-                    <li> <strong>Latency in motor commands:</strong> A slight delay in executing stop commands could result in extra movement.    
-                    </li>
-                   <li><strong>Wheel friction and drift:</strong> One wheel may have moved faster than the other, causing the Duckiebot to drift slightly.</li>
-                    <li><strong>Uneven surface condition:</strong> Even small inconsistencies in the floor may have contributed to the deviations.</li>  
-                </p>
-            
-                <p>
-                    To correct the issue, adjustments were made by slightly reducing speed and fine-tuning the motor power to balance both wheels. 
-                    After experimenting with different values, the correct parameters were found, and the Duckiebot successfully completed the full rotation and stopped as expected.
-                </p>
             </div>
             
 
