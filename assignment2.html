@@ -130,7 +130,7 @@
             <li>
                 <h3>A screenshot of subscriber info from “Hello from…”</h3>
                 <div class="image-container">
-                    <img src="images/hello_ros.png" alt="ROS Subscriber" class="deliverable-photo">
+                    <img src="images/publisher.png" alt="ROS Subscriber" class="deliverable-photo">
                 </div>
                 <p>
                     The <strong>Publisher node</strong> is responsible for sending messages to a specific topic in ROS. It continuously broadcasts a text message to 
@@ -143,6 +143,9 @@
                 </p>
                 
                 <p><strong>Subscriber Node (MySubscriberNode)</strong></p>
+                <div class="image-container">
+                    <img src="images/subscriber.png" alt="ROS Subscriber" class="deliverable-photo">
+                </div>
                 <p>
                     The <strong>Subscriber node</strong> listens for messages being published on a specific topic. When a new message arrives, the Subscriber node 
                     retrieves and processes it. In this case, the Subscriber reads and logs the message sent by the Publisher.
@@ -210,7 +213,7 @@
             <li>
                 <h3>A video of the Duckiebot moving forward and backward for 1.25 meters</h3>
                 <video width="auto" height="600" controls>
-                    <source src="videos/forward_backward.mp4" type="video/mp4">
+                    <source src="videos/straight_code.mov" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
                 <div class="report">
@@ -226,15 +229,63 @@
                 </div>
                 
             </li>
+            <li>
+                <h3>A video of the Duckiebot rotating clockwise and counter clockwise</h3>
+                <video width="auto" height="600" controls>
+                    <source src="videos/rotate.mov" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="report">
+                    <p>
+                        Need to explain
+                </div>
+                
+            </li>
 
             <div class="report">
-                <h2>Straight-Line Motion and Rotation Task</h2>
+                <h2>Straight-Line Motion and Rotation Task Explanation</h2>
             
                 <h3>1. Straight-Line Motion</h3>
                 <p>
-                    The Duckiebot was programmed to move forward for <strong>1.25 meters</strong> and then reverse back the same distance. While the movement was mostly accurate, after long hours of experimenting with numbers,
-                    some deviations were observed between the <strong>actual and desired location</strong>.
+                    The Duckiebot was programmed to move forward for <strong>1.25 meters (125 cm)</strong> and then reverse back the same distance. 
+                    While the movement was mostly accurate, some deviations were observed between the <strong>actual and desired location</strong> 
+                    due to minor variations in wheel speed and latency in stopping.
                 </p>
+                
+                <h4>Mathematical Calculations for 125 cm Distance</h4>
+                <p>
+                    To ensure the Duckiebot traveled exactly <strong>125 cm</strong>, we calculated the required number of <strong>encoder ticks</strong> 
+                    based on our measured values.
+                </p>
+                
+                <ul>
+                    <li>
+                        The measured <strong>wheel circumference</strong> is <strong>21 cm</strong>.
+                    </li>
+                    <li>
+                        From our measurements, we found that <strong>one full wheel rotation (21 cm traveled) corresponds to 135 encoder ticks</strong>.
+                    </li>
+                    <li>
+                        To determine how many <strong>ticks correspond to 1 cm</strong>, we calculated:
+                        <br>
+                        <code>Ticks per cm = 135 / 21 ≈ 6.43 ticks/cm</code>
+                    </li>
+                    <li>
+                        To find the number of <strong>ticks needed to travel 125 cm</strong>, we used:
+                        <br>
+                        <code>Required Ticks = (135 / 21) * 125 ≈ 805 ticks</code>
+                    </li>
+                </ul>
+                
+                <p>
+                    Thus, the Duckiebot needed to move approximately <strong>805 ticks forward</strong> and then <strong>805 ticks in reverse</strong>.
+                    To account for the motor command delay, we have to reduce the few ticks and set it to 750
+                </p>
+                <p>
+                    Initially, we set equal throttle values for both wheels, but the robot veered slightly to the left. To correct this, we adjusted the 
+                    <strong>left wheel throttle to 0.545</strong> and the <strong>right wheel throttle to 0.5</strong>, ensuring a straighter trajectory.
+                </p>
+                
             
                 <h4>Why is there a difference between the actual and desired location?</h4>
                 <p>
@@ -243,7 +294,7 @@
             
                 <h4>What speed did you use?</h4>
                 <p>
-                    The speed was initially set to a 0.4 for the throttle to maintain stability. We later adjusted to around 0.5 and that minimized our bot's issue of going lest but it did not fix it 
+                    The speed was initially set to a 0.4 for the throttle to maintain stability. We later adjusted to around 0.5 for the right throtle and 0.545 for the left throttle and that minimized our bot's issue of going lest but it did not fix it entirely.
                 </p>
             
                 <h4>What happens when you increase or decrease the speed?</h4>
@@ -253,7 +304,46 @@
                 </p>
             
                 <h3>2. Rotation Task</h3>
-            
+                <p>
+                    The Duckiebot was programmed to rotate <strong>90 degrees clockwise (π/2 radians)</strong> and then rotate back to 
+                    <strong>0 degrees counterclockwise</strong>. The movement was based on **encoder tick counts**, ensuring precise rotation.
+                </p>
+
+                    <h4>Mathematical Calculations for 90-Degree Rotation</h4>
+                    <p>
+                        To rotate the Duckiebot by <strong>90 degrees</strong>, we needed to determine the number of <strong><ticks/strong> required. 
+                    </p>
+
+                    <ul>
+                        <li>
+                            From previous measurements, we determined that <strong>one full wheel rotation corresponds to 135 encoder ticks</strong>.
+                        </li>
+                        <li>
+                            We found that rotating 90 degrees required the <strong>left wheel to move forward for 35 ticks</strong> 
+                            while the right wheel remained stationary.
+                        </li>
+                        <li>
+                            The formula used for determining tick count:
+                            <br>
+                            <code>Required Ticks for 90° Rotation = Experimentally found ≈ 35 ticks</code>
+                        </li>
+                        <li>
+                            To rotate back counterclockwise to <strong>0 degrees</strong>, the l<strong> wheel moved in reverse for the same 35 ticks</strong>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Thus, the Duckiebot performed an accurate <strong>90-degree clockwise rotation</strong> and then returned to its original position 
+                        by rotating <strong>90 degrees counterclockwise</strong>, both using <strong>35 encoder ticks per movement</strong>.
+                    </p>
+
+                    <p>
+                        Initially, small deviations were observed where the bot sometimes <strong>rotated slightly more than 90 degrees</strong>. 
+                        To correct this, adjustments were made by fine-tuning the motor power and ensuring the **right wheel remained completely still** 
+                        during the rotation.
+                    </p>
+
+                            
                 <h4>Did you observe any deviations in the rotation?</h4>
                 <p>
                    Yes, It would occasionally rotated <strong>more than 90 degrees</strong> before stopping.
@@ -281,9 +371,21 @@
                     Your browser does not support the video tag.
                 </video>
                 <div class="report">
-                    <p>The Duckiebot followed a “D” shaped trajectory using wheel encoder odometry.</p>
+                    <p>The Duckiebot followed a <strong>“D” shaped trajectory</strong> using wheel encoder odometry.</p>
+                    
+                    <h4>LED State Indicators</h4>
+                    <ul>
+                        <li><strong>🔴 Red LED:</strong> Indicates that the Duckiebot is <strong>stopping for 5 seconds</strong>.</li>
+                        <li><strong>🔵 Blue LED:</strong> Indicates that the Duckiebot is <strong>moving along the D-shaped path</strong>.</li>
+                    </ul>
+            
+                    <p>
+                        The LED color transitions help visualize the different motion states of the Duckiebot, ensuring clear feedback 
+                        on when it is actively moving versus when it is in a stationary state.
+                    </p>
                 </div>
             </li>
+            
             <div class="report">
                 <h2>Overall Implementation Summary</h2>
             
