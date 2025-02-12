@@ -206,13 +206,24 @@
                 </video>
                 <div class="report">
                     <p>
-                        The Duckiebot successfully moved forward and backward for <strong>1.25 meters</strong>. Initially, we set equal throttle values for both wheels, 
-                        but the robot consistently veered to the left. To correct this, we adjusted the speed of each wheel individually to ensure a straight trajectory.
+                        The WheelEncoderReaderNode is implemented as a subclass of DTROS, a specialized ROS class designed for Duckietown robots. This node is assigned the NodeType.PERCEPTION
+                        classification, which is appropriate for processing sensor data, such as wheel encoder readings. The selection of this node type enables accurate tracking of the 
+                        Duckiebot’s movement in both forward and reverse directions by leveraging encoder feedback. The node subscribes to two topics, /left_wheel_encoder_node/tick and
+                        /right_wheel_encoder_node/tick, which provide real-time wheel encoder data using the WheelEncoderStamped message type. The callback_left and callback_right functions
+                        are employed to process data from each encoder independently. Using separate callbacks for each wheel ensures that encoder readings are handled correctly, accommodating
+                        differences in resolution or synchronization issues between the left and right wheels.
                     </p>
                     <p>
-                        To accurately measure the distance traveled, we used <strong>encoder ticks</strong>. Given that one full wheel rotation corresponds to 
-                        <strong>135 ticks</strong>, we performed the necessary calculations to determine the exact number of ticks required to cover <strong>1.25 meters</strong>. 
-                        This approach gave us better motion control.
+                        Additionally, the node publishes commands to /wheels_driver_node/wheels_cmd using the WheelsCmdStamped message type to control wheel velocities. A rate of rospy.Rate(1)
+                        is used for command execution, ensuring updates are sent once per second, which helps in precise movement execution while preventing excessive command flooding. The logic 
+                        behind movement control is based on encoder ticks, with a threshold of 750 ticks used to drive the Duckiebot forward for 1.25 meters and then backward for 1.25 meters. The
+                        radius of the wheel is obtained from <code>rospy.get_param(f"/{self._vehicle_name}/kinematics_node/radius")</code> which comes out to be 0.032m which covers distance of almost
+                        20cm which is 135 ticks. To cover the distance of 1.25m, it requires nearby 840 ticks (calculated) which was off by almost 90 ticks as measured by measuring tape in real time.
+                    </p>
+                    <p>
+                        The parameters for movement are set using THROTTLE_LEFT and THROTTLE_RIGHT with directional multipliers (DIRECTION_LEFT, DIRECTION_RIGHT), allowing the Duckiebot to switch between 
+                        moving forward and backward seamlessly. This approach ensures accurate motion tracking and enables controlled movements such as straight-line driving and rotations based on
+                        encoder feedback. The use of encoder-based tick counting allows for deterministic control, crucial for tasks like calibration and precise navigation.
                     </p>
                 </div>
                 
