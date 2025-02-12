@@ -493,6 +493,7 @@
                     <p>
                         The state logic is implemented in two main states: state_1 and state_2 (state_2 includes state_3). State 1 is designed to keep the robot stationary for 5 seconds while setting the LED to red, effectively halting all movement and ensuring the robot is in a known state before starting the path. In State 2, the robot begins a trajectory along a "D" shaped path. It updates the wheel velocities based on encoder ticks, which represent the movement of the wheels. The robot moves forward for a specific distance (1.2 meters), stops, rotates by 90 degrees clockwise, and then proceeds along other segments of the path. During this process, the encoder values are continuously monitored in the callbacks, ensuring that the robot moves the exact distance required. These values are used to stop the robot when the target distance is achieved. The states are designed to control the robot's motion step-by-step, using feedback from the encoders to ensure precision in distance and rotational movement. This feedback loop ensures that the robot operates reliably, adjusting its motion based on real-time sensor data.
                     </p>
+                    <h2>1. Move straight for 1.2m</h2>
                     <p>The robot starts by moving straight for 1.2 meters. It uses the following velocity parameters:</p>
                     <ul>
                         <li><strong>vel_left:</strong> 0.33 (50% throttle forward)</li>
