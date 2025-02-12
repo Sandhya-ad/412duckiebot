@@ -268,6 +268,25 @@
                         <br>
                         The rospy.Rate(1) command ensures that commands are published at a rate of 1 Hz, meaning one update per second. This controlled rate prevents excessive command flooding while maintaining smooth motion execution. Another rate, rospy.Rate(20), is used for processing messages at a higher frequency to ensure timely updates.
                     </p>
+
+                    <p>
+                        The movement logic is based on encoder tick counting. The Duckiebot rotates 90 degrees clockwise when the left wheel moves forward while the right wheel remains stationary. This is achieved by setting THROTTLE_LEFT = 0.545 and THROTTLE_RIGHT = 0, ensuring that only the left wheel moves. The bot completes the rotation after registering 35 encoder ticks which was calculated using wheel base of bot that is 12cm (measured using tape) which make a circle of circumference 20.11cm. In order to rotate 90 degrees clockwise, the wheel of bot with radius 3.2cm (135 ticks in one rotation) has to cover almost 5cm which turns out to be 35 ticks. The left wheel moves backward while the right wheel remains stationary. This is done by setting DIRECTION_LEFT = -1, effectively reversing the left wheel’s movement while maintaining the same tick threshold of 35.
+                    </p>
+                    <p>
+                        <h3>i. Did you observe any deviations in the rotation?</h3>
+                        <p>Yes, there might be slight deviations in the rotation of the Duckiebot.</p>
+                        
+                        <h3>ii. If deviations exist, what could be the cause?</h3>
+                        <ul>
+                            <li><strong>Wheel Slippage:</strong> The wheels might slip, especially on surfaces with low traction, affecting the precise movement and leading to deviations in rotation.</li>
+                            <li><strong>Encoder Resolution Differences:</strong> If the encoder resolution between the left and right wheels is not perfectly matched or calibrated, it could cause unequal movement, resulting in rotational inaccuracies.</li>
+                            <li><strong>Motor Inconsistencies:</strong> Differences in motor performance or power output between the left and right motors could result in uneven wheel speeds, leading to rotational drift.</li>
+                            <li><strong>Tick Counting Errors:</strong> Errors in counting the encoder ticks due to sensor noise or incorrect message handling could result in an inaccurate number of ticks being counted, causing deviations in rotation.</li>
+                            <li><strong>Encoder Calibration Issues:</strong> If the wheel encoders are not calibrated correctly, the number of ticks per wheel revolution might not correspond accurately to the actual distance traveled or rotation achieved.</li>
+                            <li><strong>Asymmetry in the Chassis:</strong> Structural misalignment or differences in the positioning of the wheels on the chassis could lead to an uneven turning radius, resulting in deviations during rotation.</li>
+                            <li><strong>Environmental Factors:</strong> External factors such as uneven surfaces, obstacles, or floor conditions could affect the robot’s movement and cause deviations in the expected rotation.</li>
+                        </ul>
+                    </p>
                 </div>
                 
             </li>
