@@ -1,6 +1,6 @@
 /* General Body Styling */
 body {
-    background-color: #f5f5f5; 
+    background-color: #f5f5f5;
     font-family: 'Georgia', serif;
     margin: 0;
     padding: 30px;
@@ -10,7 +10,7 @@ body {
 
 /* Headings */
 h1 {
-    color: #8B0000; 
+    color: #8B0000;
     font-size: 48px;
     font-weight: bold;
     text-align: center;
@@ -18,7 +18,7 @@ h1 {
 }
 
 h2 {
-    color: #5A0000; /* Slightly darker shade for subtitles */
+    color: #5A0000;
     font-size: 36px;
     font-weight: bold;
     text-align: center;
@@ -31,37 +31,48 @@ h3 {
     font-weight: bold;
     margin-bottom: 15px;
 }
+pre {
+    background-color: #f8f8f8; /* Light background */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    white-space: pre-wrap;  /* Allows wrapping */
+    word-wrap: break-word;  /* Ensures long words break */
+    overflow-x: auto; /* Enables horizontal scrolling for very long lines */
+    max-width: 100%; /* Prevents it from going outside its container */
+}
+
+code {
+    background-color: #f4f4f4; /* Light gray background */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 16px;
+    white-space: normal; /* Allow text wrapping */
+    word-break: break-word; /* Breaks long words */
+    overflow-wrap: break-word; /* Ensures breaking */
+}
+
 
 /* Paragraph Styling */
 p {
-    font-size: 22px; /* Increased size for readability */
-    text-align: justify; /* Academic alignment */
+    font-size: 22px;
+    text-align: justify;
     margin-bottom: 15px;
 }
 
-/* Description Section */
-.description {
-    background-color: #ffffff;
-    border: 2px solid #8B0000;
-    border-radius: 12px;
-    padding: 25px;
+/* Responsive Container */
+.description, .deliverables, .report, .references {
     max-width: 1200px;
     margin: 30px auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
-    text-align: justify;
 }
 
 /* Deliverables Section */
-.deliverables {
-    margin: 30px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 12px;
-    border: 2px solid #8B0000;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-    max-width: 1200px;
-}
-
 .deliverables h1 {
     font-size: 40px;
     color: #8B0000;
@@ -96,12 +107,13 @@ p {
 video {
     display: block;
     margin: 25px auto;
+    max-width: 100%;
     border: 3px solid #8B0000;
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* References */
+/* References Section */
 .references {
     margin: 30px auto;
     padding: 25px;
@@ -110,29 +122,27 @@ video {
     border: 2px solid #8B0000;
     max-width: 1200px;
 }
-/* Increase font size for lists */
+
+/* Lists */
 ul {
-    font-size: 18px;  /* Adjust the font size */
-    line-height: 1.6; /* Improve readability */
+    font-size: 18px;
+    line-height: 1.6;
 }
 
-/* Ensure nested lists are properly spaced */
 ul ul {
-    margin-left: 20px;  /* Indent nested lists */
-    font-size: 17px;    /* Slightly smaller font for sub-items */
+    margin-left: 20px;
+    font-size: 17px;
 }
 
-/* Make list item text bold for emphasis */
 li {
-    font-weight: 500;  /* Slightly bold for better visibility */
-    padding: 5px 0;    /* Add spacing between list items */
+    font-weight: 500;
+    padding: 5px 0;
 }
-
 
 /* Links */
 a {
     font-size: 18px;
-    color: #004080; /* More academic dark blue */
+    color: #004080;
     text-decoration: none;
     font-weight: bold;
 }
@@ -140,4 +150,115 @@ a {
 a:hover {
     text-decoration: underline;
     color: #8B0000;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 42px;
+    }
+
+    h2 {
+        font-size: 32px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 20px;
+    }
+
+    .deliverables h1 {
+        font-size: 36px;
+    }
+
+    ul {
+        font-size: 17px;
+    }
+
+    a {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    .deliverables h1 {
+        font-size: 32px;
+    }
+
+    ul {
+        font-size: 16px;
+    }
+
+    li {
+        padding: 3px 0;
+    }
+
+    .deliverable-photo {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    ul {
+        font-size: 15px;
+    }
+
+    li {
+        font-weight: 400;
+    }
+
+    a {
+        font-size: 14px;
+    }
+
+    .deliverable-photo {
+        max-width: 100%;
+    }
+
+    .description, .deliverables, .report, .references {
+        padding: 15px;
+    }
 }

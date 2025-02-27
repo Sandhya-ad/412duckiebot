@@ -8,33 +8,32 @@ body {
     color: #333; /* Text color */
 }
 
-/* Description Section */
-.description {
-    background-color: #fff; /* White background for contrast */
-    border: 2px solid #cc0052; /* Pink border */
-    border-radius: 15px; /* Rounded corners */
-    padding: 20px; /* Space inside the box */
-    max-width: 1200px; /* Limit the width */
-    margin: 20px auto; /* Center the box with vertical margin */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    text-align: center; /* Center-align the text */
-}
-
-.description p {
-    font-size: 20px; /* Increase font size for readability */
-    color: #333; /* Neutral text color */
-    margin: 0; /* Remove default margins */
-    line-height: 1.6; /* Improve readability */
+/* Responsive Container */
+.container, .description, .deliverables, .report, .references {
+    max-width: 1200px; /* Limit width */
+    margin: 20px auto; /* Center the box */
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
 /* Headings */
 h1 {
-    color: #cc0052; /* Bold dark pink */
-    font-size: 55px;
+    color: #cc0052;
+    font-size: 48px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Paragraph Styling */
+.description p {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+    line-height: 1.6;
 }
 
 /* Links */
@@ -44,119 +43,20 @@ ul {
 }
 
 li {
-    margin: 15px 0; /* Increase spacing between list items */
+    margin: 15px 0;
 }
 
 a {
     text-decoration: none;
     color: #007BFF;
-    font-size: 32px;
+    font-size: 28px; /* Adjusted for better scaling */
     font-weight: bold;
-    transition: color 0.3s ease-in-out; /* Add a hover animation */
+    transition: color 0.3s ease-in-out;
 }
 
 a:hover {
-    color: #cc0052; /* Change to pink on hover */
-    text-decoration: underline;
-}
-.intrinsic-photo {
-    width: 300px; /* Make the image larger */
-    height: auto; /* Maintain aspect ratio */
-    border: 2px solid #333; /* Add a border for better visibility */
-    border-radius: 10px; /* Add rounded corners */
-    margin: 0; /* Remove any additional margins */
-}
-.deliverable-photo {
-    width: 1000px; /* Make the image larger */
-    height: auto; /* Maintain aspect ratio */
-    border: 2px solid #333; /* Add a border for better visibility */
-    border-radius: 10px; /* Add rounded corners */
-    margin: 0; /* Remove any additional margins */
-}
-
-/* Container Styling */
-.container {
-    display: flex; /* Arrange text and image horizontally */
-    align-items: flex-start; /* Align the top of the text and image */
-    justify-content: center; /* Center content horizontally */
-    margin: 20px auto;
-    max-width: 1200px; /* Limit the container width */
-    background: #fff;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
-}
-
-/* Text Section */
-.text {
-    margin-right: 30px;
-}
-
-.text h1 {
-    font-size: 48px; /* Adjust font size for balance */
-}
-
-.text ul {
-    margin-top: 15px;
-}
-
-/* Image Styling */
-.image-container {
-    flex-shrink: 0;
-}
-
-.right-photo {
-    width: 450px;
-    height: auto;
-    border-radius: 15px;
-    border: 3px solid #cc0052; /* Bold pink border */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
-}
-
-/* Deliverables Section */
-.deliverables {
-    margin: 20px auto;
-    padding: 25px;
-    background: #fff;
-    border-radius: 15px;
-    border: 2px solid #cc0052; /* Pink border */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    max-width: 1200px;
-}
-
-.deliverables h1 {
-    font-size: 36px;
     color: #cc0052;
-    text-align: center;
-    margin-bottom: 15px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle text shadow */
-}
-
-.deliverables h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 15px;
-}
-
-.deliverables ul {
-    list-style-type: disc; /* Bullets */
-    margin-left: 30px;
-    line-height: 1.8;
-    color: #555; /* Softer text color for readability */
-}
-
-.deliverables li {
-    font-size: 20px;
-    margin-bottom: 12px;
-}
-
-/* Video Styling */
-video {
-    display: block;
-    margin: 20px auto; /* Center the video */
-    border: 2px solid #cc0052; /* Add pink border */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    text-decoration: underline;
 }
 
 /* Fancy Hover Effect for Links */
@@ -176,12 +76,77 @@ a::after {
 }
 
 a:hover::after {
-    width: 100%; /* Add underline effect */
+    width: 100%;
 }
-/* Report Section Styling */
+
+/* Responsive Image Styling */
+.intrinsic-photo, .deliverable-photo, .right-photo {
+    width: 100%;
+    height: auto;
+    max-width: 450px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    margin: 0 auto; /* Center images */
+    display: block;
+}
+
+/* Deliverable Photo */
+.deliverable-photo {
+    max-width: 1000px; /* Limit large images */
+}
+
+/* Flexbox for Content */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px; /* Add space between elements */
+}
+
+/* Text Section */
+.text {
+    flex: 1;
+    min-width: 300px; /* Ensures text doesn't shrink too much */
+}
+
+.text h1 {
+    font-size: 42px;
+}
+
+/* Image Container */
+.image-container {
+    flex-shrink: 0;
+    max-width: 450px;
+}
+
+/* Video Styling */
+video {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+    border: 2px solid #cc0052;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* List Styling */
+.deliverables ul, .references ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.deliverables li, .references li {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+/* Report Section */
 .report {
     margin-top: 15px;
-    padding: 10px;
+    padding: 15px;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -197,20 +162,7 @@ a:hover::after {
     color: #cc0052;
 }
 
-/* Add Spacing for the Report Sections */
-ul li {
-    margin-bottom: 20px;
-}
-.references {
-    margin: 20px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 15px;
-    border: 2px solid #cc0052; /* Matches other sections */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    max-width: 1200px;
-}
-
+/* References */
 .references h2 {
     font-size: 24px;
     color: #cc0052;
@@ -218,26 +170,100 @@ ul li {
     margin-bottom: 15px;
 }
 
-.references ul {
-    list-style-type: disc; /* Bullet points */
-    margin-left: 20px; /* Indentation */
-    line-height: 1.6; /* Line spacing */
-}
-
-.references li {
-    margin-bottom: 8px; /* Space between items */
-    font-size: 14px; /* Smaller text size */
-    color: #555; /* Softer text color */
-}
-
 .references a {
-    font-size: 14px; /* Smaller link text size */
-    color: #007BFF; /* Link color */
-    text-decoration: none; /* Remove underline */
-    transition: color 0.3s ease; /* Smooth color transition */
+    font-size: 16px;
+    color: #007BFF;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .references a:hover {
-    color: #0056b3; /* Darker blue on hover */
-    text-decoration: underline; /* Underline on hover */
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 40px;
+    }
+
+    .text h1 {
+        font-size: 36px;
+    }
+
+    .text {
+        margin-right: 0; /* Remove margin to fit better */
+        text-align: center;
+    }
+
+    a {
+        font-size: 24px; /* Adjusted size for readability */
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-container {
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 32px;
+    }
+
+    .text h1 {
+        font-size: 28px;
+    }
+
+    .text, .description p {
+        font-size: 18px;
+    }
+
+    .deliverables ul, .references ul {
+        margin-left: 15px;
+    }
+
+    .deliverables li, .references li {
+        font-size: 16px;
+    }
+
+    .report {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .text h1 {
+        font-size: 24px;
+    }
+
+    .text, .description p {
+        font-size: 16px;
+    }
+
+    a {
+        font-size: 20px;
+    }
+
+    .deliverables li, .references li {
+        font-size: 14px;
+    }
+
+    .report {
+        font-size: 13px;
+        padding: 10px;
+    }
 }
