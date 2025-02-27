@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 1</title>
+    <link rel="stylesheet" href="templates/assignment1.css">
+</head>
+<body>
+    <h1>Assignment 3 </h1>
+    <section class="deliverables">
+        <h1>Part 1: Computer Vision</h1>
+        <ul>
+            <li>
+                A screen capture of the distorted camera image
+                <div class="image-container">
+                    <img src="images/distorted.png" alt="Distorted image" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h2>Camera Distortion</h2>
+                    <p>
+                        Camera distortion occurs due to the curvature of the lens, which bends light unevenly as it enters the camera sensor. This effect is particularly noticeable in radial distortion, where straight lines appear curved, especially near the edges of the image. We can see the same thing happen to our camera image in the above picture, especially near the edges, lines appear bent
+                        </p>
+                    <p>
+                        <strong>Subscribing to camera topic: </strong>
+                        To capture a distorted image, we subscribe to the ROS topic /camera_node/image/compressed, which provides a compressed stream of images from the camera. The subscription allows us to receive and process real-time camera data in ROS.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A screen capture of the undistorted camera image
+                <div class="image-container">
+                    <img src="images/undistorted_blur.png" alt="Distorted image" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h2>Undistorting the Image</h2>
+                    <p>
+                        To correct lens distortion, we use <strong> intrinsic parameters</strong> that describe the camera’s internal properties, such as focal length, optical center, and distortion coefficients. These parameters allow us to mathematically reverse the distortion effect and obtain a properly aligned image.
+                    </p>
+                    <p>
+                        By performing these steps, we ensure that the camera feed provides an accurate and geometrically correct 
+                        representation of the environment, which is essential for tasks such as color detection and lane following.
+                    </p>
+                    
+                    <h3>What we did</h3>
+                    
+                    <ul>
+                        <li>
+                            <strong>Subscribing to the camera topic:</strong>
+                            The robot receives real-time images from the ROS topic <code>/camera_node/image/compressed</code>. 
+                            These images contain lens distortions that need correction before they can be used for accurate perception.
+                        </li>
+                        
+                        <li>
+                            <strong>Retrieving camera intrinsic parameters:</strong>
+                            The robot's camera has unique calibration parameters stored in <code>/camera_node/camera_info</code>. 
+                            These include:
+                            <ul>
+                                <li><strong>Camera Matrix:</strong> Defines how the camera maps the 3D world to a 2D image.</li>
+                                <li><strong>Distortion Coefficients:</strong> Corrects radial and tangential distortions.</li>
+                            </ul>
+                            Using these parameters ensures that undistortion is tailored specifically for the robot's camera.
+                        </li>
+                        
+                        <li>
+                            <strong>Calculating an optimal new camera matrix:</strong>
+                            Using <code>cv2.getOptimalNewCameraMatrix()</code>, we refine the camera matrix to minimize unwanted black borders 
+                            in the corrected image. This step improves the visual quality of the output.
+                        </li>
+                    
+                        <li>
+                            <strong>Applying image correction:</strong>
+                            The <code>cv2.undistort()</code> function is used to transform the distorted image into an undistorted one. 
+                            This ensures that straight lines appear as they should, and objects are accurately represented.
+                        </li>
+                    
+                        <li>
+                            <strong>Publishing the corrected image:</strong>
+                            The final undistorted image is then published to <code>/camera_undistorted/image/compressed</code>. 
+                            This allows other ROS nodes, such as those responsible for <strong>color detection and lane following</strong>, to work 
+                            with a geometrically correct image.
+                        </li>
+                    </ul>
+                    
+                    <h3>Purpose:</h3>
+
+                    <p>
+                        Undistortion is essential for accurate lane detection and navigation. When an image is distorted, straight lane markings can appear curved, leading to incorrect edge detection and misalignment. By correcting distortion, the robot can accurately perceive lane boundaries and navigate accordingly. Additionally, distorted images can stretch or compress objects, causing inconsistencies in object sizing. Undistortion ensures that objects appear with correct proportions, improving the accuracy of both lane detection and obstacle recognition. Color detection also benefits from undistortion, as color inconsistencies often occur near the edges of distorted images. By stabilizing the image, the robot can reliably detect lane colors without interference from warped color transitions. Finally, distance estimation depends on an accurate visual representation of the environment. Since distorted images alter the perceived shape and position of objects, correcting the distortion ensures that distance calculations remain precise, leading to more reliable navigation and decision-making.
+                    </p>
+                    
+                    <ul>
+                        <li>
+                            <h2>Lane Detection Contours</h2>
+                            <p>
+                                The images below show the detected contours for <strong>blue, red, and green lanes</strong> using 
+                                our ROS subscriber in <code>rqt_image_view</code>. The contours are drawn based on 
+                                <strong>color segmentation and edge detection</strong>, ensuring accurate lane identification.
+                            </p>
+            
+                            <h3>Contours Detecting a Blue Line</h3>
+                            <div class="image-container">
+                                <img src="images/blue_detection.png" alt="Blue Lane Contours" class="deliverable-photo">
+                            </div>
+                            <p>
+                                The above image shows how the <strong>blue lane</strong> is detected. The contours are drawn 
+                                around the largest detected blue area using <strong>HSV filtering and contour extraction</strong>.
+                            </p>
+            
+                            <h3>Contours Detecting a Red Line</h3>
+                            <div class="image-container">
+                                <img src="images/red_detection.png" alt="Red Lane Contours" class="deliverable-photo">
+                            </div>
+                            <p>
+                                This image demonstrates the detection of the <strong>red lane</strong>. Since red appears in two 
+                                sections of the <strong>HSV color space</strong>, we use two separate hue ranges to ensure complete 
+                                detection. The detected lane is highlighted with contours.
+                            </p>
+            
+                            <h3>Contours Detecting a Green Line</h3>
+                            <div class="image-container">
+                                <img src="images/green_detection.png" alt="Green Lane Contours" class="deliverable-photo">
+                            </div>
+                            <p>
+                                The <strong>green lane</strong> is detected by applying a mask within the green HSV range. The 
+                                contours drawn on the detected area highlight the extracted lane.
+                            </p>
+                        </li>
+            
+                        <li>
+                            <h2>Explanation of Color Detection</h2>
+
+                            <h3>Preprocessing the Image</h3>
+                            <p>
+                                The camera feed is first undistorted to correct for lens distortion. 
+                                Then, the image is converted from </strong>BGR to HSV format</strong> to separate 
+                                color components, making color segmentation more reliable.
+                            </p>
+                            <p>
+                                Color detection is performed by converting the <strong>BGR image to HSV format</strong> and 
+                                applying predefined HSV thresholds. The <strong>HSV (Hue, Saturation, Value) color model</strong> 
+                                is preferred because it separates color intensity from brightness, making it more 
+                                reliable under different lighting conditions.
+                            </p>
+            
+                            <h2>How Color Detection Works</h2>
+                            <h3> Applying Color Thresholding</h3>
+                            <p>
+                                The HSV model is used to filter out specific colors corresponding to 
+                                <strong>red, blue, and green lanes</strong>. The following ranges are applied:
+                            </p>
+                            <ul>
+                                <li><strong>Red Lane:</strong> <code>Lower: [0, 100, 100] & [170, 100, 100], Upper: [10, 255, 255] & [180, 255, 255]</code></li>
+                                <li><strong>Blue Lane:</strong> <code>Lower: [100, 150, 100], Upper: [130, 255, 255]</code></li>
+                                <li><strong>Green Lane:</strong> <code>Lower: [46, 50, 65], Upper: [95, 196, 199]</code></li>
+                            </ul>
+                            <p>
+                                Each color mask isolates only the pixels matching the specified HSV range, 
+                                filtering out everything else.
+                            </p>
+            
+                            <h3>3. Removing Noise</h3>
+                            <p>
+                                Morphological operations, such as </strong>closing</strong>, are applied to remove 
+                                small artifacts that could cause false detections.
+                            </p>
+            
+                            <h3>4. Finding and Drawing Contours</h3>
+                            <p>
+                                Using <code>cv2.findContours()</code>, lane boundaries are detected 
+                                and enclosed in a bounding box using <code>cv2.boundingRect()</code>. 
+                                The largest detected contour for each color is selected.
+                            </p>
+            
+                            <h3>5. Estimating Distance to the Lane</h3>
+                            <p>
+                                The width of the detected lane in pixels is used to estimate its 
+                                real-world distance using the <strong>pinhole camera model</strong>:
+                            </p>
+                            <pre>
+    distance_m = (known_object_width_m * focal_length_px) / object_pixel_width
+                            </pre>
+                            <p>
+                                The known width of the lane is a predefined constant, and the 
+                                focal length is retrieved from the camera’s intrinsic parameters.
+                                This is used to see how far the object is from the robot
+                            </p>
+            
+                            <h3>6. Publishing the Detected Lane</h3>
+                            <p>
+                                The processed image, with detected lanes and distance labels, 
+                                is published to <code>/lane_detection/image/compressed</code> for 
+                                integration with navigation modules.
+                                The dimensions of the detected lane is also published in the terminal.
+                                Example of our output:
+                                <pre>
+    [INFO] [1740622024.705454]: Published lane detection image.
+    [INFO] [1740622024.751194]: Detected: red, Dimensions: (240, 23), Distance: 0.223m
+    [INFO] [1740622024.772927]: Published lane detection image.
+    [INFO] [1740622024.830412]: Detected: red, Dimensions: (242, 22), Distance: 0.221m
+                                </pre>
+
+                            </p>
+                        </li>
+            
+                        <li>
+                            <h2>Summary of Detection for Each Color</h2>
+            
+                            <h3>Red Lane Detection</h3>
+                            <p>
+                                - <strong>Uses two HSV ranges</strong> to capture different red shades.
+                                - Filters out yellow regions that may overlap with red.
+                                - Extracts the <strong>largest contour</strong> and highlights it.
+                                - <strong>Used to detect stop points</strong> and straight movement areas.
+                            </p>
+            
+                            <h3>Blue Lane Detection</h3>
+                            <p>
+                                - Detects blue lanes using a <strong>tight HSV range</strong>.
+                                - Filters out shadows and dark patches.
+                                - Contours are enclosed in a bounding box.
+                                - <strong>Used to trigger right turns</strong> in the navigation system.
+                            </p>
+            
+                            <h3>Green Lane Detection</h3>
+                            <p>
+                                - Filters out unwanted environmental colors.
+                                - Detects <strong>left-turn trigger points</strong>.
+                                - Bounding boxes are drawn around the detected lane.
+                            </p>
+                        </li>
+                    </ul>
+                        </li>
+            
+                        <li>
+                            <h2>How to Tune HSV Parameters</h2>
+                            <p>
+                                The HSV values for each lane color are adjusted to optimize detection. The tuning process involves:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Increasing or decreasing the Hue (H) range</strong> to fine-tune color recognition. 
+                                    If a color is not detected properly, the hue range is <strong>expanded or shifted</strong>.
+                                </li>
+                                <li>
+                                    <strong>Adjusting the Saturation (S) range</strong> to control how vivid the colors need to be. 
+                                    This helps filter out <strong>faded colors</strong> and background noise.
+                                </li>
+                                <li>
+                                    <strong>Modifying the Value (V) range</strong> to adjust brightness sensitivity. Raising the 
+                                    lower limit reduces <strong>false detections in dark regions</strong>.
+                                </li>
+                                <li>
+                                    <strong>Testing under different lighting conditions</strong> to ensure the values work consistently.
+                                </li>
+                            </ul>
+                            <p>
+                                The final <strong>HSV thresholds</strong> used for lane detection are:
+                            </p>
+                            <ul>
+                                <li><strong>Blue Lane:</strong> <code>Lower: [100, 150, 100], Upper: [130, 255, 255]</code></li>
+                                <li><strong>Red Lane:</strong> <code>Lower: [0, 100, 100] & [170, 100, 100], Upper: [10, 255, 255] & [180, 255, 255]</code></li>
+                                <li><strong>Green Lane:</strong> <code>Lower: [46, 50, 65], Upper: [95, 196, 199]</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+                
+    <section class="references">
+        <h2>References</h2>
+        <ul>
+            <li>Duckietown Documentation: <a href="https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html">https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html</a></li>
+            <li>ChatGPT was used for help with making the website and understanding why we need camera calibration</li>
+        </ul>
+    </section>
+    
+    
+    <a href="index.html">Back to Assignments</a>
+</body>
+</html>
