@@ -264,6 +264,133 @@
                             </ul>
                         </li>
                     </ul>
+                    <ul>
+                        <li>
+                            <h3>A video of the Duckiebot going straight until red line stopping and moving 30 cm ahead</h3>
+                            <video width="auto" height="600" controls>
+                                <source src="videos/red_lane.mp4" type="video/mp4">
+                                Your 
+                            </video>
+                        </li>
+                        <li>
+                            <h3>A video of the Duckiebot going straight until blue line stopping then turning right after turning the right lights to red</h3>
+                            <video width="auto" height="600" controls>
+                                <source src="videos/blue_lane.mp4" type="video/mp4">
+                                Your 
+                            </video>
+                        </li>
+                        <li>
+                            <h3>A video of the Duckiebot going straight until green line stopping then turning left after turning the left lights to red</h3>
+                            <video width="auto" height="600" controls>
+                                <source src="videos/blue_lane.mp4" type="video/mp4">
+                                Your 
+                            </video>
+                        </li>
+                    </ul>
+                    <h1>Lane Behavior Execution Report</h1>
+                    <section class="deliverables">
+                        
+                        <h2>Detecting Lane Colors</h2>
+                        <p>
+                            The Duckiebot detects lanes using a camera feed, which is processed in real time. The image is converted from BGR to HSV format, allowing the system to separate color information efficiently. Specific HSV thresholds are applied to filter out the target colors:
+                        </p>
+                        <ul>
+                            <li><strong>Red Lane:</strong> Uses two separate HSV ranges to capture different red shades.</li>
+                            <li><strong>Blue Lane:</strong> Detected using a tight HSV range to avoid false positives.</li>
+                            <li><strong>Green Lane:</strong> A mask is applied within the green HSV range to isolate the green lane.</li>
+                        </ul>
+                        
+                        <h2>Estimating Distance to the Lane</h2>
+                        <p>
+                            The detected lane width in pixels is used to estimate the real-world distance. The pinhole camera model formula is applied:
+                        </p>
+                        <pre>
+                    distance_m = (known_lane_width_m * focal_length_px) / detected_pixel_width
+                        </pre>
+                        <p>
+                            This ensures accurate movement decisions based on how far the lane is from the robot.
+                        </p>
+                        
+                        <h2>LED Signaling</h2>
+                        <p>
+                            The robot uses LEDs to signal turning intentions:
+                        </p>
+                        <ul>
+                            <li>For a <strong>right turn (blue lane)</strong>, the right-side LEDs (front & back) turn red.</li>
+                            <li>For a <strong>left turn (green lane)</strong>, the left-side LEDs (front & back) turn red.</li>
+                            <li>For a <strong>red lane stop</strong>, no LED signaling is needed.</li>
+                        </ul>
+                        <p>The LED colors are controlled through ROS by publishing a pattern to the LED topic.</p>
+                        
+                        <p>
+                            The Duckiebot uses LED indicators to signal turning behavior based on detected lanes. The LED system consists of 
+                            five individual lights positioned around the robot, each assigned a specific index:
+                        </p>
+                        <ul>
+                            <li><strong>Index 0:</strong> Front-left LED</li>
+                            <li><strong>Index 1:</strong> Back-right LED</li>
+                            <li><strong>Index 2:</strong> Center LED (not used for signaling)</li>
+                            <li><strong>Index 3:</strong> Back-left LED</li>
+                            <li><strong>Index 4:</strong> Front-right LED</li>
+                        </ul>
+
+                        <h3>Right Turn Signal (Blue Lane)</h3>
+                        <p>
+                            When the robot detects a blue lane, it activates the <strong>front-right (index 4) and back-right (index 1) LEDs</strong> to signal a right turn. 
+                            This is achieved by publishing a pattern where only these indices are set to active while the others remain off.
+                        </p>
+                        <p>
+                            The LED activation pattern for a right turn is:
+                        </p>
+                        <pre>
+                        [0,1,0,0,1]  <!-- Only back-right and front-right LEDs are ON -->
+                        </pre>
+                        <p>
+                            This pattern is sent to the Duckiebot's LED topic:
+                        </p>
+                        <pre>
+                        /csc22907/led_emitter_node/led_pattern
+                        </pre>
+
+                        <h3>Left Turn Signal (Green Lane)</h3>
+                        <p>
+                            When the robot detects a green lane, it activates the <strong>front-left (index 0) and back-left (index 3) LEDs</strong> to signal a left turn. 
+                            The activation pattern ensures only the required LEDs are turned on.
+                        </p>
+
+                        
+                        <h2>Executing Movement</h2>
+                        <p>
+                            The Duckiebot executes specific behaviors based on the detected lane color:
+                        </p>
+                        <ul>
+                            <li><strong>Blue Lane:</strong> The robot stops, signals a right turn, then performs a 90-degree right curve.</li>
+                            <p>
+                                When the duckiebot detects blue lane, it calculates how much distance to move and that distance is sent to a straight moving function to move upto that distance. It stops after moving for that distance and does the right turn.
+                            </p>
+                            <li><strong>Red Lane:</strong> After detecting the red, calculates the distance, move upto the point, then robot stops for 3 seconds and moves forward by 30 cm.</li>
+
+                            <li><strong>Green Lane:</strong> Moves upto the point, stops, signals a left turn, then executes a 90-degree left curve.</li>
+                        </ul>
+                        <p>
+                            The movement is executed using wheel encoder data to ensure accurate positioning.
+                        </p>
+                        
+                        <h2>Execution Log</h2>
+                        <pre>
+                    [INFO] Lane detected: blue
+                    [INFO] Stopping for 3 seconds.
+                    [INFO] Signaling right turn (right LEDs red).
+                    [INFO] Executing 90-degree right curve.
+                    [INFO] Lane detected: red
+                    [INFO] Stopping for 3 seconds.
+                    [INFO] Moving forward 30 cm.
+                    [INFO] Lane detected: green
+                    [INFO] Stopping for 3 seconds.
+                    [INFO] Signaling left turn (left LEDs red).
+                    [INFO] Executing 90-degree left curve.
+                        </pre>
+                    </section>
                 </div>
             </li>
     </section>
@@ -271,8 +398,7 @@
     <section class="references">
         <h2>References</h2>
         <ul>
-            <li>Duckietown Documentation: <a href="https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html">https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html</a></li>
-            <li>ChatGPT was used for help with making the website and understanding why we need camera calibration</li>
+            <li>ChatGPT was used for help with making the website and understanding some topics like P, PD and PID controllers</li>
             <li> 
                 <a href="https://samuelfneumann.github.io/posts/duckie_4/">Duckietown Blog - Lane Detection</a>
             </li>
