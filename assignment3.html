@@ -415,14 +415,54 @@
             <ul>
                 <li><b>Yellow dotted lane:</b> Separates inbound and outbound traffic.</li>
                 <li><b>White solid lane:</b> Defines the outer boundary of the lane.</li>
-            </ul
-            <ol>
+            </ul>
+
+        
+            <h2>1. Converting ROS Image to OpenCV and Cropping</h2>
+<p>
+   We first convert the incoming <code>CompressedImage</code> from ROS into an OpenCV BGR image.
+   Then, we crop the bottom half (where lanes are usually visible) to reduce processing overhead.
+</p>
+<pre><code>
+cv_image = self._bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+height, width, _ = cv_image.shape
+bottom_half = cv_image[height // 2:, :]
+</code></pre>
+
+<h2>2. Undistorting the Cropped Image</h2>
+<p>
+   Using camera calibration parameters (camera matrix &amp; distortion coefficients), we undistort 
+   the cropped image so that straight lines in the scene appear straight in the image.
+</p>
+<pre><code>
+self.camera_matrix = np.array([
+    [263.6565,   0.0,     333.3401],
+    [  0.0,    265.4119, 210.1412],
+    [  0.0,      0.0,       1.0  ]
+])
+self.dist_coeffs = np.array([-0.2147, 0.03395, 0.008495, 0.0004646, 0.0])
+
+def undistort_image(self, image):
+    new_cam_mtx, roi = cv2.getOptimalNewCameraMatrix(
+        self.camera_matrix, 
+        self.dist_coeffs, 
+        (image.shape[1], image.shape[0]), 
+        1, 
+        (image.shape[1], image.shape[0])
+    )
+    undistorted = cv2.undistort(image, self.camera_matrix, self.dist_coeffs, None, new_cam_mtx)
+    return cv2.resize(undistorted, (320, 240))
+</code></pre>
+
+<ol>
     <li>
         <h2>Detecting the Yellow Dotted Lane</h2>
         <h3>Convert BGR format to HSV format:</h3>
-        <pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)</code></pre>
+        <pre><code>
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        </code></pre>
         <ul>
-            <li>The strategy is to use OpenCV, which loads images in BGR format. HSV is preferable for easier color segmentation under varying lighting conditions.</li>
+            <li>HSV is preferable for easier color segmentation under varying lighting conditions.</li>
         </ul>
 
         <h3>Define Yellow Color Range:</h3>
@@ -431,7 +471,7 @@ lower_yellow = np.array([20, 75, 100])
 upper_yellow = np.array([30, 255, 255])
         </code></pre>
         <ul>
-            <li>Hue ranges roughly between 20 and 30 for a "yellow" color; Saturation (75 to 255) and Value (100 to 255) capture the typical brightness of lane markings.</li>
+            <li>Hue ranges between 20 and 30 for "yellow"; Saturation (75-255) and Value (100-255) capture brightness.</li>
         </ul>
 
         <h3>Create Yellow Mask:</h3>
@@ -439,8 +479,7 @@ upper_yellow = np.array([30, 255, 255])
 yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
         </code></pre>
         <ul>
-            <li>Produces a binary image highlighting yellow areas of the lane markings.</li>
-            <li>Pixels matching the criteria become white (255); all others are black (0).</li>
+            <li>Binary mask highlighting yellow lane areas.</li>
         </ul>
     </li>
 
@@ -450,9 +489,6 @@ yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
         <pre><code>
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         </code></pre>
-        <ul>
-            <li>HSV conversion enables easier color segmentation under varied lighting.</li>
-        </ul>
 
         <h3>Define White Color Range:</h3>
         <pre><code>
@@ -460,7 +496,7 @@ lower_white = np.array([0, 0, 135])
 upper_white = np.array([180, 29, 255])
         </code></pre>
         <ul>
-            <li>Captures white lane markings by focusing on low saturation and high brightness.</li>
+            <li>White typically has low saturation and high brightness.</li>
         </ul>
 
         <h3>Create White Mask:</h3>
@@ -473,21 +509,15 @@ white_mask = cv2.inRange(hsv, lower_white, upper_white)
     </li>
 
     <li>
-        <h2>Combining Both Masks and Publishing Result to ROS Topic</h2>
+        <h2>Combining Masks and Publishing to ROS Topic</h2>
         <pre><code>
-# Detect yellow and white lanes
-yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-white_mask = cv2.inRange(hsv, lower_white, upper_white)
-
-# Combine masks
 combined_mask = cv2.bitwise_or(yellow_mask, white_mask)
-
-# Publish result to ROS topic
-self.pub_both.publish(self._bridge.cv2_to_compressed_imgmsg(combined_mask))
+self.pub_both.publish(
+    self._bridge.cv2_to_compressed_imgmsg(combined_mask)
+)
         </code></pre>
         <ul>
-            <li>Any pixel marked white (255) in either mask appears white in the final output.</li>
-            <li>Resulting mask clearly shows detected lane markings.</li>
+            <li>Combines masks into a single binary image for clear lane visualization.</li>
         </ul>
     </li>
 </ol>
