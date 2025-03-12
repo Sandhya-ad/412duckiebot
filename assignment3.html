@@ -719,11 +719,201 @@ self.max_integral = 20  # For anti-windup<br>
         with only minor deviations around the center.
     </p>
 
+
+        <h1>Part 3: Lane Following</h1>
+        <h2>1. Creating a Lane-Following Node</h2>
+<p>
+    The goal is to integrate computer vision (OpenCV) with a controller (P or PD) to 
+    follow a lane for a full lap. We convert the camera feed to an OpenCV image, detect 
+    the lane boundaries (e.g., using color thresholding or other techniques), and compute 
+    an error signal representing how far the robot is from the center of the lane. 
+    This error is then used by the controller to adjust the wheel speeds in order to keep 
+    the robot aligned and moving forward.
+</p>
+
+<h2>2. Starting with a Basic Proportional Controller (P)</h2>
+<p>
+    In a proportional (P) controller, the control output is directly proportional to the 
+    error. If <code>error</code> is the difference between the lane center and the robot’s 
+    camera center, then:
+</p>
+<pre><code>control = Kp * error
+</code></pre>
+<p>
+    <strong>Behavior in Practice:</strong>
+</p>
+<ul>
+    <li><strong>Difficulty in Straight-Line Movement:</strong> 
+        Sometimes the robot struggles to move straight. Even slight noise or minor camera offsets 
+        can cause the robot to oscillate or veer to one side. If <code>Kp</code> is too large, the 
+        robot aggressively corrects, causing overshoot. If <code>Kp</code> is too small, it is slow to 
+        respond and may drift off course.
+    </li>
+    <li><strong>Handling Large Errors:</strong> 
+        When encountering a large deviation (e.g., the robot starts far from the lane center or 
+        goes around a sharp curve), the large error leads to a large steering correction. This 
+        can cause abrupt turns and overshoot, making the robot swing widely from one side of the 
+        lane to the other.
+    </li>
+    <li><strong>Oval-Shaped Track Issues:</strong> 
+        On curves or oval segments, the path curvature can be quite large. The P controller 
+        attempts to correct for sudden increases in error by turning sharply. Once it’s done 
+        correcting, it may overcompensate and drift into another lane or continue oscillating, 
+        especially if <code>Kp</code> is not carefully tuned. As a result, the robot might appear 
+        to “go crazy” or oscillate dramatically around tight curves.
+    </li>
+</ul>
+
+<h2>3. Transition to PD Controller</h2>
+<p>
+    By adding a derivative component (<code>Kd * derivative</code>), the controller can anticipate 
+    changes in error and slow down corrections before the robot overshoots. The PD control law is:
+</p>
+<pre><code>control = Kp * error + Kd * (error - previous_error)
+</code></pre>
+<p>
+    <strong>Behavior and Observations:</strong>
+</p>
+<ul>
+    <li><strong>Smoother Response:</strong> 
+        The derivative term helps reduce the overshoot that is common in purely proportional control. 
+        The robot typically shows fewer oscillations because <code>Kd</code> dampens large, rapid changes 
+        in error.
+    </li>
+    <li><strong>Handling Large Errors:</strong> 
+        While the derivative term helps slow down corrections, very large errors (like starting off-center 
+        or navigating tight corners on an oval track) can still cause the robot to veer quickly. The PD 
+        controller will attempt to compensate, but if <code>Kd</code> is not tuned properly, you might 
+        still see the robot zigzag between lane boundaries.
+    </li>
+    <li><strong>Oval-Track Behavior:</strong>
+        On an oval or curved track, the robot might do better than with the P controller alone—less 
+        oscillation and quicker stabilization. However, if the derivative gain is too high, noise from 
+        camera readings or slight fluctuations can trigger overreactions. In some instances, the robot 
+        may swing from left lane to right lane if it experiences a sudden large error, then corrects 
+        again, continuing a “hunting” pattern across the track. 
+    </li>
+</ul>
+
+<p>
+    In summary, the PD controller generally results in smoother performance than P alone, 
+    but it still requires careful tuning of <code>Kp</code> and <code>Kd</code> to avoid 
+    excessive noise amplification or slow, sluggish responses around curves.
+</p>
+
+
+<h2>4. Transition to PID Controller</h2>
+
+<h3> Following modification made to PID Controller for straight line task in Part 2 </h3>h3
+<h4>Anti-Windup and Adaptive Speed in PID</h2>
+
+<p>
+    Below are two important code snippets from the PID controller that address 
+    common issues in lane following: 
+</p>
+
+<ol>
+    <li><strong>Integral Windup Prevention</strong></li>
+    <li><strong>Adaptive Speed Control for Curves</strong></li>
+</ol>
+
+<h4>1. Anti-Windup Mechanism</h3>
+<pre><code># Anti-windup: Clamp integral value to the range [0, max_integral]<br>
+if self.integral >= self.max_integral:<br>
+    self.integral -= error<br>
+    if self.integral <= 75:<br>
+        self.integral *= 0.80<br>
+elif self.integral < 0:<br>
+    self.integral = 0<br>
+</code></pre>
+
+<p>
+    The integral term (<code>self.integral</code>) accumulates the error over time. If this error 
+    persists for a long period (e.g., the robot is stuck or significantly off track), 
+    the integral can become excessively large. This is known as “integral windup,” and 
+    it can cause the controller to apply unnecessarily large corrections, leading to 
+    oscillations or erratic motion.
+</p>
+<p>
+    In this code, we clamp <code>self.integral</code> within the range 
+    <code>[0, self.max_integral]</code>. If the integral grows beyond 
+    <code>self.max_integral</code>, we subtract out the most recent error and optionally 
+    scale the integral back (e.g., multiplying by <code>0.80</code>) to ensure it remains 
+    within a safe range. If <code>self.integral</code> becomes negative, 
+    it is reset to 0. This prevents the integral from ballooning out of control or 
+    becoming negative beyond what is meaningful for the controller.
+</p>
+
+<h4>2. Adaptive Speed for Curves</h3>
+<pre><code># Adjust base speed depending on the error (for better performance on curves)<br>
+# When the error exceeds the curve_threshold, use a slower speed<br>
+if abs(error) > self.curve_threshold:<br>
+    base_speed = self.slow_speed<br>
+else:<br>
+    base_speed = self.normal_speed<br>
+</code></pre>
+
+<p>
+    This snippet dynamically adjusts the robot’s forward speed based on the 
+    magnitude of the lane-centering <code>error</code>. A large absolute error 
+    (<code>abs(error)</code>) typically indicates a sharp curve or a significant deviation 
+    from the lane center. In these cases, a slower speed (<code>self.slow_speed</code>) 
+    helps the robot handle the turn more reliably and reduces the chance of overshoot.
+</p>
+<p>
+    Conversely, when the error is small (the lane is relatively straight or the 
+    robot is close to the center), the robot moves at a higher forward speed 
+    (<code>self.normal_speed</code>). This balances efficiency on straight segments 
+    with stability and caution on sharp curves.
+</p>
+
+<hr/>
+
+<h3>Question: “Try adding the integral term to your PD controller and implement a PID control logic. Does this help with your control?”</h2>
+<p>
+    Yes, incorporating the integral term into the PD controller (thereby creating 
+    a PID controller) can help eliminate steady-state error. Here’s why:
+</p>
+<ul>
+    <li><strong>Elimination of Offset:</strong> The integral term accumulates small persistent errors that 
+    the proportional term alone cannot fully correct, ensuring the robot stays aligned 
+    with the lane center over time.</li>
+    <li><strong>Potential Drawback - Windup:</strong> Without an anti-windup mechanism, the integral 
+    can become too large if the robot remains far from the lane for an extended period. 
+    This can lead to excessive corrective actions, causing oscillation. That’s why the 
+    clamping and conditional adjustments of <code>self.integral</code> are important.</li>
+    <li><strong>Better Handling of Imperfections:</strong> The integral term helps correct 
+    subtle, continuous biases—like slight miscalibration in the camera or wheels—ensuring 
+    a more stable center-line following.</li>
+</ul>
+<p>
+    In practice, a properly tuned PID controller (with the integral gain set moderately 
+    and combined with anti-windup) typically shows less steady-state offset and smoother 
+    lane centering. However, you must balance <code>Kp</code>, <code>Ki</code>, and <code>Kd</code> 
+    carefully to avoid introducing new oscillations or slow response.
+</p>
+
+
+
+
+        
+
             <h3>A video of the Duckiebot doing lane-following</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/our_lane_follow.mov" type="video/mp4">
                 Your 
             </video>
+        <p>
+        In this demonstration, the Duckiebot is running a PID controller specifically tuned for 
+        an oval-shaped track. The proportional term keeps the robot steering toward the lane center, 
+        the integral term compensates for any lingering offset or bias, and the derivative term 
+        prevents overshoot on curves. The result is a smooth path around the oval without stops 
+        or external intervention. Even when encountering tighter turns, the Duckiebot maintains 
+        stability and remains centered, thanks to adaptive speed adjustments and the integral 
+        windup prevention mechanism.
+    </p>
+
+
 
 
 
