@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 1</title>
+    <link rel="stylesheet" href="templates/assignment1.css">
+</head>
+<body>
+    <h1>Assignment 1</h1>
+    <section class="deliverables">
+        <h1>Deliverables</h1>
+        <ul>
+            <li>
+                A video of Duckiebot driving in a straight line for a distance of 2 meters
+                <video width="auto" height="600" controls>
+                    <source src="videos/straight.mov" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        This video demonstrates the Duckiebot's ability to drive in a straight line for a distance of 2 meters. Achieving this behavior required extensive motor calibration to ensure that both motors operated at consistent speeds. Despite multiple adjustments to the calibration parameters, the Duckiebot kept on going right right.
+
+                        After an hour of tuning,  the Duckiebot suddenly drove straight, demonstrating that robots can sometimes behave unpredictably. The deviation was likely caused by slight discrepancies in motor performance.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A video of Duckiebot running the lane following demo
+                <video width="auto" height="600" controls>
+                    <source src="videos/lane_following.MOV" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        This video shows the Duckiebot completing 2 rounds of lane-following demo, where it follows the road on auto-pilot. Often times, the robot had difficulty staying in the lane, especially at turns. This could be due to small errors in camera calibration, delays in motor response, or difficulty detecting the lane in certain lighting conditions. This highlights the importance of proper wheels and camera calibrations.
+                    </p>
+                    <p>
+                        The Duckiebot follows the lane by using its camera to see the road and find the lane markings, like the yellow line in the center or the white lines on the sides. It looks at where it is on the road and adjusts its direction if it starts drifting off the lane. The robot keeps checking and making small movements to stay in the lane.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A screen capture of the camera output and motor signals as seen from the Dashboard
+                <div class="image-container">
+                    <img src="images/motorCamera2.png" alt="Duckie Bot" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p> 
+                        This screen capture shows the camera's view and motor signals from the Dashboard. The camera output helped us understand the robots view while the motor signals provided insights into the robot's movement.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A screen capture of intrinsics calibration.yaml file
+                <div class="image-container">
+                    <img src="images/intrinsic.png" alt="Duckie Bot" class="intrinsic-photo">
+                </div>
+                <div class="image-container">
+                    <img src="images/intrin.png" alt="Duckie Bot" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        The intrinsics calibration is essential for correcting camera distortions, ensuring that the camera accurately perceives the real world. This calibration process determines the camera's internal parameters, such as focal length and lens distortion coefficients.
+
+                        We performed the intrinsics calibration by moving the camera in various angles and distances capturing checkerboard pattern from different prespectives. This ensures that the calibration accurately accounts for the camera's field of view and distortion.Accurate intrinsics calibration is important for reliable lane detection and object recognition in robotics.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A screen capture of extrinsics calibration.yaml file
+                <div class="image-container">
+                    <img src="images/extrinsic.png" alt="Duckie Bot" class="intrinsic-photo">
+                </div>
+                <div class="image-container">
+                    <img src="images/extrin.png" alt="Duckie Bot" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        The extrinsics calibration ensures the robot understands the camera’s position and angle relative to its body. This is essential for accurate lane-following and object detection, as it allows the robot to interpret what the camera sees in relation to its surroundings.
+                    </p>
+                </div>
+            </li>
+            <li>
+                A screen capture of kinematics calibration.yaml file
+                <div class="image-container">
+                    <img src="images/kinematics.png" alt="Duckie Bot" class="intrinsic-photo">
+                </div>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        This is the kinematic calibration of the Duckiebot. Kinematic calibration helps the robot correct movement errors and ensures smoother and more accurate motion.
+                    </p>
+                </div>
+            </li>
+
+
+            <li>
+                A screen capture of Duckiebot saying “Hello from MY_ROBOT”
+                <div class="image-container">
+                    <img src="images/hello.png" alt="Duckie Bot" class="deliverable-photo">
+                </div>
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        This screen capture shows the Duckiebot successfully saying "Hello from MY_ROBOT," confirming that it is connected and responding to commands. This ensures the system is set up correctly for further tasks.
+                    </p>
+                </div>
+            </li>
+
+            <li>
+                A short overall write-up about what you implemented, how it works, what you learned, 
+                what challenges you came across, and how you overcame the challenges
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                        In this assignment, we tested various aspects of the Duckiebot to ensure its ready for future tasks. We calibrated the motor and intrinsic and extrinsic cameras, tested the Duckiebot’s lane-following and straight-line driving capabilities, and made sure our bot was connected to the system.</p>
+                    <p>
+                        While observing the Duckiebot's lane-following, I think it uses its camera to detect lane markings and adjust its movement accordingly. The robot processes the camera image to figure out its position. If it starts to drift, it makes small corrections to stay in the lane. This helps the Duckiebot follow the road smoothly and navigate turns
+                    </p>
+                    
+                    <p>
+                        Through this process, I learned the purpose of different calibrations, such as camera and motor calibration, and the importance of precise adjustments for reliable robot performance. I also learned how the smallest thing can impact the robot's behavior greatly. One major challenge was ensuring the Duckiebot drove straight, consistently veering to one side despite adjustments. This process taught me to be patient with the robot and also how unpredictable robots can be.
+                    </p>
+                    
+                </div>
+            </li>
+
+            <li>
+                Your reflections, thoughts, and comments on this exercise of the lab
+                <div class="report">
+                    <h3>Report:</h3>
+                    <p>
+                       This lab exercise gave me a basic understanding of how robots operate. It was interesting to observe how the Duckiebot's behavior could be unpredictable at times and even a small change in setup can impact it's motion a lot. It made me understand how working with robots require so much care and attention to smallest details which made me appreciate robotics and the precision it demands.
+                    </p>
+                </div>
+            </li>
+            <li>
+                Github link to Repository for this assignment
+                    <p>
+                        <a href = "https://github.com/Sandhya-ad/412code">"https://github.com/Sandhya-ad/412code"</a></li>
+                    </p>
+            </li>
+        </ul>
+    </section>
+    <section class="references">
+        <h2>References</h2>
+        <ul>
+            <li>Duckietown Documentation: <a href="https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html">https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html</a></li>
+            <li>ChatGPT was used for help with making the website and understanding why we need camera calibration</li>
+        </ul>
+    </section>
+    
+    
+    <a href="index.html">Back to Assignments</a>
+</body>
+</html>
