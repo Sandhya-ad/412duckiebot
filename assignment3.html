@@ -410,7 +410,19 @@
                 Your 
             </video>
         </li>
+        <p>
+            In order to implement any of the above controllers (P, PD, PID), the Duckiebot needs to accurately detect two critical lane markings:
+            <ul>
+                <li><b>Yellow dotted lane:</b> Separates inbound and outbound traffic.</li>
+                <li><b>White solid lane:</b> Defines the outer boundary of the lane.</li>
+            </ul>
+            The strategy to detect the lanes is to convert the image from the BGR color space to the HSV color space using:
+            <pre><code>cv2.cvtColor(image, cv2.COLOR_BGR2HSV)</code></pre>
+        </p>            
         <li>
+            <p>
+                
+            </p>
             <h3>A video of the Duckiebot going straight PI controller</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/PI_S.mov" type="video/mp4">
