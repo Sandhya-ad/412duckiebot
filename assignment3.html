@@ -396,7 +396,12 @@
         <h1>Part 2: Controllers</h1>
         <p>
             This section explores in depth different types of controllers that enable the bot to drive
-            autonomously.
+            autonomously. There are three types of controllers we are going to use in this section:
+            <ul>
+                <li><b>Proportional (P) Controller:</b> Adjusts the control output proportionally to the current error. It’s simple but can lead to steady-state error and overshoot.</li>
+                <li><b>Proportional-Derivative (PD) Controller:</b> Combines proportional control with derivative action, helping predict future errors and reducing overshoot and oscillations, resulting in a more stable response.</li>
+                <li><b>Proportional-Integral-Derivative (PID) Controller:</b> Adds integral action to PD, eliminating steady-state errors by considering past errors. PID controllers offer robust performance, widely used in autonomous systems for smooth and precise control.</li>
+            </ul>
         </p>
 
 
