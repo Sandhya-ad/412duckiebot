@@ -646,7 +646,6 @@ The computed lane center is compared to the image center. The difference (error)
 <h3>e) What methods can be used to tune the controller’s parameters effectively?</h3>
 <ul>
     <li><b>Manual/Iterative Tuning:</b> Gradually adjust <code>Kp</code>, <code>Ki</code>, and <code>Kd</code> by observing the robot's behavior (overshoot, steady-state error, oscillations) and refine them step by step.</li>
-    <li><b>Ziegler–Nichols Method:</b> A classical approach using the critical gain and oscillation period to set <code>P</code>, <code>I</code>, and <code>D</code> values.</li>
     <li><b>Automated Tuning:</b> Advanced techniques or machine-learning-based methods can systematically search for the optimal parameters.</li>
     <li><b>Simulation Before Real Deployment:</b> Use a simulator to test and tune gains in a safe environment.</li>
 </ul>
@@ -675,34 +674,54 @@ self.max_integral = 20  # For anti-windup<br>
         
 
 
-        <li>
-            <h3>A video of the Duckiebot going straight P controller</h3>
+            <h3>A video of the Duckiebot going straight using P controller</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/P_S.mov" type="video/mp4">
                 Your 
             </video>
-        </li>
-        <li>                
-            <h3>A video of the Duckiebot going straight PI controller</h3>
+            <p>
+            The Duckiebot moves in a "snake-like" manner because the proportional (P) controller 
+            is constantly correcting the steering based on the current error. Here, <code>Kp</code> is set to 
+            <code>0.0013</code>. With this gain, the robot can still overshoot the center line repeatedly due to 
+            inherent latency or noise, causing oscillatory (back-and-forth) motion. If <code>Kp</code> is too high, the 
+            corrections become more aggressive, leading to increased swerving. Conversely, setting it too low 
+            might result in sluggish steering and prolonged time to correct deviations.
+        </p>
+                 
+            <h3>A video of the Duckiebot going straight using PI controller</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/PI_S.mov" type="video/mp4">
                 Your 
             </video>
-        </li>
-        <li>
-            <h3>A video of the Duckiebot going straight PID controller</h3>
+        <p>
+        With the PD controller, the proportional term (<code>Kp</code>) corrects for the immediate lane deviation, 
+        while the derivative term (<code>Kd</code> = <code>0.005</code>) helps dampen rapid changes to reduce 
+        overshoot. Initially, the Duckiebot still exhibits a slight “snake-like” motion, but the derivative action 
+        gradually brings it closer to the center line with fewer oscillations over time. However, there is still 
+        some minor wiggle because the derivative term can amplify small measurement noises and minor latencies, 
+        causing the controller to make frequent steering adjustments.
+    </p>
+
+            <h3>A video of the Duckiebot going straight using PID controller</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/PID_s.mov" type="video/mp4">
                 Your 
             </video>
-        </li>
-        <li>
+        <p>
+        In the PID controller, the integral term (<code>Ki</code> = <code>0.001</code>) helps eliminate 
+        the steady-state error so that the Duckiebot remains closer to the exact center of the lane 
+        as it moves. The proportional term provides immediate corrections, while the derivative term 
+        reduces overshoot and smooths out larger oscillations. As a result, the Duckiebot exhibits 
+        more stable behavior compared to the P or PD controllers, maintaining a straighter path 
+        with only minor deviations around the center.
+    </p>
+
             <h3>A video of the Duckiebot doing lane-following</h3>
             <video width="auto" height="600" controls>
                 <source src="videos/our_lane_follow.mov" type="video/mp4">
                 Your 
             </video>
-        </li>
+
 
 
     </section>
@@ -710,7 +729,7 @@ self.max_integral = 20  # For anti-windup<br>
     <section class="references">
         <h2>References</h2>
         <ul>
-            <li>ChatGPT was used for help with making the website and understanding some topics like P, PD and PID controllers</li>
+            <li>ChatGPT was used for help with making the website and understanding the topics like P, PD and PID controllers as well as to generate the report.</li>
             <li> 
                 <a href="https://samuelfneumann.github.io/posts/duckie_4/">Duckietown Blog - Lane Detection</a>
             </li>
