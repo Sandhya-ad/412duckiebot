@@ -551,16 +551,132 @@ def find_centroid(self, contours):
 The computed lane center is compared to the image's horizontal midpoint. The difference provides an error signal used by steering controllers (P, PD, PID):
 </p>
 
-<pre><code>
-image_center = image.shape[1] // 2
-error = image_center - lane_center
-steering_command = controller.update(error)
-</code></pre>
+<h3>Integrating Lane Center with Controllers</h3>
+<p>
+The computed lane center is compared to the image center. The difference (error) is used by steering controllers.
+</p>
 
+<!-- (a) Pros and Cons of P, PD, and PID Controllers -->
+<h3>a) What are the pros and cons of “P,” “PD,” and “PID” controllers?</h3>
+
+<h4>P Controller Logic:</h4>
+<pre><code>def apply_p_controller(self, lane_center, image):
+    image_center = image.shape[1] // 2
+    error = image_center - lane_center
+    control = self.Kp * error
+    base_speed = 0.3
+    vel_left = base_speed + control
+    vel_right = base_speed - control
+</code></pre>
 <ul>
-    <li>This error calculation directly guides steering corrections to keep the Duckiebot aligned with lane centers.</li>
+    <li><b>Pros:</b> Simple to implement and provides a relatively fast response.</li>
+    <li><b>Cons:</b> Tends to leave a steady-state error (offset) and may cause overshoot if Kp is large.</li>
 </ul>
 
+<h4>PD Controller Logic:</h4>
+<pre><code>def apply_pd_controller(self, lane_center, image):
+    image_center = image.shape[1] // 2
+    error = image_center - lane_center
+    derivative = error - self.prev_error
+    self.prev_error = error
+    control = self.Kp * error + self.Kd * derivative
+    base_speed = 0.4
+    vel_left = base_speed + control
+    vel_right = base_speed - control
+</code></pre>
+<ul>
+    <li><b>Pros:</b> The derivative term helps reduce overshoot and allows the system to stabilize faster.</li>
+    <li><b>Cons:</b> More sensitive to noise. If the derivative gain is too high, it can amplify small measurement errors.</li>
+</ul>
+
+<h4>PID Controller Logic (with Anti-Windup):</h4>
+<pre><code>def apply_pid_controller(self, lane_center, image):
+    image_center = image.shape[1] // 2
+    error = lane_center - image_center
+    derivative = error - self.prev_error
+    self.prev_error = error
+    self.integral += error
+    
+    # Anti-windup to prevent integral saturation
+    self.integral = max(min(self.integral, self.max_integral), -self.max_integral)
+
+    control = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
+    base_speed = 0.25
+    vel_left = max(min(base_speed + control, 1.0), -1.0)
+    vel_right = max(min(base_speed - control, 1.0), -1.0)
+
+    cmd = WheelsCmdStamped()
+    cmd.vel_left = vel_left
+    cmd.vel_right = vel_right
+    self.publisher.publish(cmd)
+</code></pre>
+<ul>
+    <li><b>Pros:</b> Eliminates steady-state error through the integral term and provides a stable response under diverse conditions.</li>
+    <li><b>Cons:</b> Tuning is more complex. Without anti-windup, the integral term can grow excessively (windup).</li>
+</ul>
+
+<!-- (b) The Error Calculation Method -->
+<h3>b) What is the error calculation method for your controller?</h3>
+<p>
+    We compute the difference between the image center (i.e., the midpoint of the camera’s horizontal field) 
+    and the detected lane center. For example:
+</p>
+<pre><code>error = image_center - lane_center
+</code></pre>
+<p>
+    This <code>error</code> tells us how far off-center we are. 
+    A positive error indicates the lane is to one side, and a negative error indicates the other side.
+</p>
+
+<!-- (c) Derivative Term Impact -->
+<h3>c) How does the derivative (“D”) term in the “PD” controller impact control logic? Is it beneficial?</h3>
+<p>
+    The derivative term (<code>Kd * derivative</code>) responds to the rate of change of the error. 
+    It helps reduce overshoot and smooth out the response by reacting to rapidly changing errors. 
+    This can be beneficial if properly tuned; however, it also makes the controller more sensitive to noise, 
+    which can introduce jitter or instability if <code>Kd</code> is set too high.
+</p>
+
+<!-- (d) Integral Term Impact -->
+<h3>d) How does the integral (“I”) term in the “PID” controller affect performance? Was it useful for your robot?</h3>
+<p>
+    The integral term (<code>Ki * integral</code>) accumulates the error over time to eliminate steady-state errors. 
+    This helps the robot remain centered in the lane, even if there are persistent biases or slight slopes in the environment. 
+    However, if <code>Ki</code> is not tuned correctly or if anti-windup is not implemented, the integral can grow 
+    too large and cause significant oscillations. In many lane-following scenarios, a small integral gain can be very useful 
+    to counteract slight misalignments or biases.
+</p>
+
+<!-- (e) Methods to Tune the Controller's Parameters -->
+<h3>e) What methods can be used to tune the controller’s parameters effectively?</h3>
+<ul>
+    <li><b>Manual/Iterative Tuning:</b> Gradually adjust <code>Kp</code>, <code>Ki</code>, and <code>Kd</code> by observing the robot's behavior (overshoot, steady-state error, oscillations) and refine them step by step.</li>
+    <li><b>Ziegler–Nichols Method:</b> A classical approach using the critical gain and oscillation period to set <code>P</code>, <code>I</code>, and <code>D</code> values.</li>
+    <li><b>Automated Tuning:</b> Advanced techniques or machine-learning-based methods can systematically search for the optimal parameters.</li>
+    <li><b>Simulation Before Real Deployment:</b> Use a simulator to test and tune gains in a safe environment.</li>
+</ul>
+
+
+        <!-- Additional Explanation on Actual Tuning Values -->
+<h3>Additional Notes on Tuning Values</h3>
+<p>
+    In the code, we used:
+</p>
+<pre><code>self.Kp = 0.0013
+self.Kd = 0.005
+self.Ki = 0.001
+self.max_integral = 20  # For anti-windup
+</code></pre>
+<p>
+    These values were primarily found through trial and error. We started from a baseline (like <code>0.05</code>) and then:
+</p>
+<ul>
+    <li><b>Reduced <code>Kp</code></b> until the oscillations were minimized but the robot still corrected its course in time.</li>
+    <li><b>Adjusted <code>Kd</code></b> to dampen overshoot. Higher <code>Kd</code> provides quicker damping but can amplify noise.</li>
+    <li><b>Introduced <code>Ki</code></b> in small increments to remove any steady-state error. 
+        Once the robot could maintain a centered position, <code>Ki</code> was deemed sufficient.</li>
+    <li><b>Set <code>max_integral</code></b> to <code>20</code> to cap the integral growth and prevent windup issues.</li>
+</ul>
         
         
         
