@@ -416,8 +416,21 @@
                 <li><b>Yellow dotted lane:</b> Separates inbound and outbound traffic.</li>
                 <li><b>White solid lane:</b> Defines the outer boundary of the lane.</li>
             </ul>
-            The strategy to detect the lanes is to convert the image from the BGR color space to the HSV color space using:
-            <pre><code>cv2.cvtColor(image, cv2.COLOR_BGR2HSV)</code></pre>
+            <pre><code>
+                hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            </code></pre>
+            The strategy is to use OpenCV loads images in the BGR format. We convert to HSV because it allows for easier color segmentation under varying lighting conditions.
+            <pre><code>
+                lower_yellow = np.array([20, 75, 100])
+                upper_yellow = np.array([30, 255, 255])
+            </code></pre>
+            These two arrays define the lower and upper bounds of the yellow color in the HSV space. Moreover, Hue ranges roughly between 20 and 30 for a “yellow” color; Saturation (75 to 255) and Value (100 to 255) ensure we capture the typical brightness of lane markings.
+
+            
+        
+        
+        
+
         </p>            
         <li>
             <p>
