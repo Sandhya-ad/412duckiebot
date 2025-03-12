@@ -415,18 +415,82 @@
             <ul>
                 <li><b>Yellow dotted lane:</b> Separates inbound and outbound traffic.</li>
                 <li><b>White solid lane:</b> Defines the outer boundary of the lane.</li>
-            </ul>
-            <pre><code>
-                hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-            </code></pre>
-            The strategy is to use OpenCV loads images in the BGR format. We convert to HSV because it allows for easier color segmentation under varying lighting conditions.
-            <pre><code>
-                lower_yellow = np.array([20, 75, 100])
-                upper_yellow = np.array([30, 255, 255])
-            </code></pre>
-            These two arrays define the lower and upper bounds of the yellow color in the HSV space. Moreover, Hue ranges roughly between 20 and 30 for a “yellow” color; Saturation (75 to 255) and Value (100 to 255) ensure we capture the typical brightness of lane markings.
+            </ul
+            <ol>
+    <li>
+        <h2>Detecting the Yellow Dotted Lane</h2>
+        <h3>Convert BGR format to HSV format:</h3>
+        <pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)</code></pre>
+        <ul>
+            <li>The strategy is to use OpenCV, which loads images in BGR format. HSV is preferable for easier color segmentation under varying lighting conditions.</li>
+        </ul>
 
-            
+        <h3>Define Yellow Color Range:</h3>
+        <pre><code>
+lower_yellow = np.array([20, 75, 100])
+upper_yellow = np.array([30, 255, 255])
+        </code></pre>
+        <ul>
+            <li>Hue ranges roughly between 20 and 30 for a "yellow" color; Saturation (75 to 255) and Value (100 to 255) capture the typical brightness of lane markings.</li>
+        </ul>
+
+        <h3>Create Yellow Mask:</h3>
+        <pre><code>
+yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        </code></pre>
+        <ul>
+            <li>Produces a binary image highlighting yellow areas of the lane markings.</li>
+            <li>Pixels matching the criteria become white (255); all others are black (0).</li>
+        </ul>
+    </li>
+
+    <li>
+        <h2>Detecting the White Solid Lane</h2>
+        <h3>Convert BGR format to HSV format:</h3>
+        <pre><code>
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        </code></pre>
+        <ul>
+            <li>HSV conversion enables easier color segmentation under varied lighting.</li>
+        </ul>
+
+        <h3>Define White Color Range:</h3>
+        <pre><code>
+lower_white = np.array([0, 0, 135])
+upper_white = np.array([180, 29, 255])
+        </code></pre>
+        <ul>
+            <li>Captures white lane markings by focusing on low saturation and high brightness.</li>
+        </ul>
+
+        <h3>Create White Mask:</h3>
+        <pre><code>
+white_mask = cv2.inRange(hsv, lower_white, upper_white)
+        </code></pre>
+        <ul>
+            <li>Generates binary mask highlighting white lane boundary.</li>
+        </ul>
+    </li>
+
+    <li>
+        <h2>Combining Both Masks and Publishing Result to ROS Topic</h2>
+        <pre><code>
+# Detect yellow and white lanes
+yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+white_mask = cv2.inRange(hsv, lower_white, upper_white)
+
+# Combine masks
+combined_mask = cv2.bitwise_or(yellow_mask, white_mask)
+
+# Publish result to ROS topic
+self.pub_both.publish(self._bridge.cv2_to_compressed_imgmsg(combined_mask))
+        </code></pre>
+        <ul>
+            <li>Any pixel marked white (255) in either mask appears white in the final output.</li>
+            <li>Resulting mask clearly shows detected lane markings.</li>
+        </ul>
+    </li>
+</ol>
         
         
         
