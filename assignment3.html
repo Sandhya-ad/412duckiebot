@@ -434,19 +434,19 @@ bottom_half = cv_image[height // 2:, :]<br>
     [263.6565,   0.0,     333.3401],
     [  0.0,    265.4119, 210.1412],
     [  0.0,      0.0,       1.0 ]
-])
-self.dist_coeffs = np.array([-0.2147, 0.03395, 0.008495, 0.0004646, 0.0])
+])<br>
+self.dist_coeffs = np.array([-0.2147, 0.03395, 0.008495, 0.0004646, 0.0])<br>
 
-def undistort_image(self, image):
+def undistort_image(self, image):<br>
     new_cam_mtx, roi = cv2.getOptimalNewCameraMatrix(
         self.camera_matrix, 
         self.dist_coeffs, 
         (image.shape[1], image.shape[0]), 
         1, 
         (image.shape[1], image.shape[0])
-    )
-    undistorted = cv2.undistort(image, self.camera_matrix, self.dist_coeffs, None, new_cam_mtx)
-    return cv2.resize(undistorted, (320, 240))
+    )<br>
+    undistorted = cv2.undistort(image, self.camera_matrix, self.dist_coeffs, None, new_cam_mtx)<br>
+    return cv2.resize(undistorted, (320, 240))<br>
 </code></pre>
 
 <!-- 3. Detecting the Yellow Dotted Lane -->
@@ -455,10 +455,10 @@ def undistort_image(self, image):
    We convert the BGR image to HSV and define a range that isolates yellow hues. 
    A binary mask is created using <code>cv2.inRange</code> for the specified HSV thresholds.
 </p>
-<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-lower_yellow = np.array([20, 75, 100])
-upper_yellow = np.array([30, 255, 255])
-yellow_mask  = cv2.inRange(hsv, lower_yellow, upper_yellow)
+<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)<br>
+lower_yellow = np.array([20, 75, 100])<br>
+upper_yellow = np.array([30, 255, 255])<br>
+yellow_mask  = cv2.inRange(hsv, lower_yellow, upper_yellow)<br>
 </code></pre>
 <ul>
     <li><strong>BGR to HSV:</strong> Easier color segmentation under varying lighting.</li>
@@ -471,10 +471,10 @@ yellow_mask  = cv2.inRange(hsv, lower_yellow, upper_yellow)
 <p>
    Using the same HSV approach, we define a low-saturation, high-value range to capture white hues.
 </p>
-<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-lower_white = np.array([0, 0, 135])
-upper_white = np.array([180, 29, 255])
-white_mask  = cv2.inRange(hsv, lower_white, upper_white)
+<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)<br>
+lower_white = np.array([0, 0, 135])<br>
+upper_white = np.array([180, 29, 255])<br>
+white_mask  = cv2.inRange(hsv, lower_white, upper_white)<br>
 </code></pre>
 <ul>
     <li><strong>HSV Range (White):</strong> Low saturation (0-29), high brightness (135+).</li>
@@ -483,11 +483,11 @@ white_mask  = cv2.inRange(hsv, lower_white, upper_white)
 
 <!-- 5. Combining Masks and Publishing to ROS Topic -->
 <h2>5. Combining Masks and Publishing to ROS Topic</h2>
-<pre><code>combined_mask = cv2.bitwise_or(yellow_mask, white_mask)
+<pre><code>combined_mask = cv2.bitwise_or(yellow_mask, white_mask)<br>
 
 self.pub_both.publish(
     self._bridge.cv2_to_compressed_imgmsg(combined_mask)
-)
+)<br>
 </code></pre>
 <ul>
     <li><strong>Merging Lane Masks:</strong> Combines both yellow and white detections.</li>
@@ -513,20 +513,20 @@ self.pub_both.publish(
 
 <h3>Important Python Functions:</h3>
 <pre><code>
-# Find contours
-contours_white, _ = cv2.findContours(white_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-contours_yellow, _ = cv2.findContours(yellow_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-# Find centroid (example snippet)
-def find_centroid(self, contours):
-    largest_contour = max(contours, key=cv2.contourArea)
-    moments = cv2.moments(largest_contour)
-
-    if moments['m00'] != 0:
-        cx = int(moments['m10'] / moments['m00'])
-        cy = int(moments['m01'] / moments['m00'])
-        return (cx, cy)
-    return None
+# Find contours<br>
+contours_white, _ = cv2.findContours(white_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)<br>
+contours_yellow, _ = cv2.findContours(yellow_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)<br>
+<br>
+# Find centroid (example snippet)<br>
+def find_centroid(self, contours):<br>
+    largest_contour = max(contours, key=cv2.contourArea)<br>
+    moments = cv2.moments(largest_contour)<br>
+<br>
+    if moments['m00'] != 0:<br>
+        cx = int(moments['m10'] / moments['m00'])<br>
+        cy = int(moments['m01'] / moments['m00'])<br>
+        return (cx, cy)<br>
+    return None<br>
 </code></pre>
 
 <h3>2. Explanation of the Approach</h3>
@@ -555,13 +555,13 @@ The computed lane center is compared to the image center. The difference (error)
 <h3>a) What are the pros and cons of “P,” “PD,” and “PID” controllers?</h3>
 
 <h4>P Controller Logic:</h4>
-<pre><code>def apply_p_controller(self, lane_center, image):
-    image_center = image.shape[1] // 2
-    error = image_center - lane_center
-    control = self.Kp * error
-    base_speed = 0.3
-    vel_left = base_speed + control
-    vel_right = base_speed - control
+<pre><code>def apply_p_controller(self, lane_center, image):<br>
+    image_center = image.shape[1] // 2<br>
+    error = image_center - lane_center<br>
+    control = self.Kp * error<br>
+    base_speed = 0.3<br>
+    vel_left = base_speed + control<br>
+    vel_right = base_speed - control<br>
 </code></pre>
 <ul>
     <li><b>Pros:</b> Simple to implement and provides a relatively fast response.</li>
@@ -569,15 +569,15 @@ The computed lane center is compared to the image center. The difference (error)
 </ul>
 
 <h4>PD Controller Logic:</h4>
-<pre><code>def apply_pd_controller(self, lane_center, image):
-    image_center = image.shape[1] // 2
-    error = image_center - lane_center
-    derivative = error - self.prev_error
-    self.prev_error = error
-    control = self.Kp * error + self.Kd * derivative
-    base_speed = 0.4
-    vel_left = base_speed + control
-    vel_right = base_speed - control
+<pre><code>def apply_pd_controller(self, lane_center, image):<br>
+    image_center = image.shape[1] // 2<br>
+    error = image_center - lane_center<br>
+    derivative = error - self.prev_error<br>
+    self.prev_error = error<br>
+    control = self.Kp * error + self.Kd * derivative<br>
+    base_speed = 0.4<br>
+    vel_left = base_speed + control<br>
+    vel_right = base_speed - control<br>
 </code></pre>
 <ul>
     <li><b>Pros:</b> The derivative term helps reduce overshoot and allows the system to stabilize faster.</li>
@@ -585,25 +585,25 @@ The computed lane center is compared to the image center. The difference (error)
 </ul>
 
 <h4>PID Controller Logic (with Anti-Windup):</h4>
-<pre><code>def apply_pid_controller(self, lane_center, image):
-    image_center = image.shape[1] // 2
-    error = lane_center - image_center
-    derivative = error - self.prev_error
-    self.prev_error = error
-    self.integral += error
-    
-    # Anti-windup to prevent integral saturation
-    self.integral = max(min(self.integral, self.max_integral), -self.max_integral)
-
-    control = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
-    base_speed = 0.25
-    vel_left = max(min(base_speed + control, 1.0), -1.0)
-    vel_right = max(min(base_speed - control, 1.0), -1.0)
-
-    cmd = WheelsCmdStamped()
-    cmd.vel_left = vel_left
-    cmd.vel_right = vel_right
-    self.publisher.publish(cmd)
+<pre><code>def apply_pid_controller(self, lane_center, image):<br>
+    image_center = image.shape[1] // 2<br>
+    error = lane_center - image_center<br>
+    derivative = error - self.prev_error<br>
+    self.prev_error = error<br>
+    self.integral += error<br>
+    <br>
+    # Anti-windup to prevent integral saturation<br>
+    self.integral = max(min(self.integral, self.max_integral), -self.max_integral)<br>
+<br>
+    control = self.Kp * error + self.Ki * self.integral + self.Kd * derivative<br>
+    base_speed = 0.25<br>
+    vel_left = max(min(base_speed + control, 1.0), -1.0)<br>
+    vel_right = max(min(base_speed - control, 1.0), -1.0)<br>
+    <br>
+    cmd = WheelsCmdStamped()<br>
+    cmd.vel_left = vel_left<br>
+    cmd.vel_right = vel_right<br>
+    self.publisher.publish(cmd)<br>
 </code></pre>
 <ul>
     <li><b>Pros:</b> Eliminates steady-state error through the integral term and provides a stable response under diverse conditions.</li>
@@ -657,10 +657,10 @@ The computed lane center is compared to the image center. The difference (error)
 <p>
     In the code, we used:
 </p>
-<pre><code>self.Kp = 0.0013
-self.Kd = 0.005
-self.Ki = 0.001
-self.max_integral = 20  # For anti-windup
+<pre><code>self.Kp = 0.0013<br>
+self.Kd = 0.005<br>
+self.Ki = 0.001<br>
+self.max_integral = 20  # For anti-windup<br>
 </code></pre>
 <p>
     These values were primarily found through trial and error. We started from a baseline (like <code>0.05</code>) and then:
