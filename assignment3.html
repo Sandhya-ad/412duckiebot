@@ -418,27 +418,27 @@
             </ul>
 
         
-            <h2>1. Converting ROS Image to OpenCV and Cropping</h2>
+<!-- 1. Converting ROS Image to OpenCV and Cropping -->
+<h2>1. Converting ROS Image to OpenCV and Cropping</h2>
 <p>
    We first convert the incoming <code>CompressedImage</code> from ROS into an OpenCV BGR image.
    Then, we crop the bottom half (where lanes are usually visible) to reduce processing overhead.
 </p>
-<pre><code>
-cv_image = self._bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+<pre><code>cv_image = self._bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
 height, width, _ = cv_image.shape
 bottom_half = cv_image[height // 2:, :]
 </code></pre>
 
+<!-- 2. Undistorting the Cropped Image -->
 <h2>2. Undistorting the Cropped Image</h2>
 <p>
    Using camera calibration parameters (camera matrix &amp; distortion coefficients), we undistort 
    the cropped image so that straight lines in the scene appear straight in the image.
 </p>
-<pre><code>
-self.camera_matrix = np.array([
+<pre><code>self.camera_matrix = np.array([
     [263.6565,   0.0,     333.3401],
     [  0.0,    265.4119, 210.1412],
-    [  0.0,      0.0,       1.0  ]
+    [  0.0,      0.0,       1.0 ]
 ])
 self.dist_coeffs = np.array([-0.2147, 0.03395, 0.008495, 0.0004646, 0.0])
 
@@ -454,73 +454,113 @@ def undistort_image(self, image):
     return cv2.resize(undistorted, (320, 240))
 </code></pre>
 
-<ol>
-    <li>
-        <h2>Detecting the Yellow Dotted Lane</h2>
-        <h3>Convert BGR format to HSV format:</h3>
-        <pre><code>
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        </code></pre>
-        <ul>
-            <li>HSV is preferable for easier color segmentation under varying lighting conditions.</li>
-        </ul>
-
-        <h3>Define Yellow Color Range:</h3>
-        <pre><code>
+<!-- 3. Detecting the Yellow Dotted Lane -->
+<h2>3. Detecting the Yellow Dotted Lane</h2>
+<p>
+   We convert the BGR image to HSV and define a range that isolates yellow hues. 
+   A binary mask is created using <code>cv2.inRange</code> for the specified HSV thresholds.
+</p>
+<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 lower_yellow = np.array([20, 75, 100])
 upper_yellow = np.array([30, 255, 255])
-        </code></pre>
-        <ul>
-            <li>Hue ranges between 20 and 30 for "yellow"; Saturation (75-255) and Value (100-255) capture brightness.</li>
-        </ul>
+yellow_mask  = cv2.inRange(hsv, lower_yellow, upper_yellow)
+</code></pre>
+<ul>
+    <li><strong>BGR to HSV:</strong> Easier color segmentation under varying lighting.</li>
+    <li><strong>HSV Range (Yellow):</strong> Hue ~20-30, Saturation ~75-255, Value ~100-255.</li>
+    <li><strong>Binary Mask:</strong> Highlights yellow lane markings.</li>
+</ul>
 
-        <h3>Create Yellow Mask:</h3>
-        <pre><code>
-yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-        </code></pre>
-        <ul>
-            <li>Binary mask highlighting yellow lane areas.</li>
-        </ul>
-    </li>
-
-    <li>
-        <h2>Detecting the White Solid Lane</h2>
-        <h3>Convert BGR format to HSV format:</h3>
-        <pre><code>
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        </code></pre>
-
-        <h3>Define White Color Range:</h3>
-        <pre><code>
+<!-- 4. Detecting the White Solid Lane -->
+<h2>4. Detecting the White Solid Lane</h2>
+<p>
+   Using the same HSV approach, we define a low-saturation, high-value range to capture white hues.
+</p>
+<pre><code>hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 lower_white = np.array([0, 0, 135])
 upper_white = np.array([180, 29, 255])
-        </code></pre>
-        <ul>
-            <li>White typically has low saturation and high brightness.</li>
-        </ul>
+white_mask  = cv2.inRange(hsv, lower_white, upper_white)
+</code></pre>
+<ul>
+    <li><strong>HSV Range (White):</strong> Low saturation (0-29), high brightness (135+).</li>
+    <li><strong>Binary Mask:</strong> Highlights white lane boundaries.</li>
+</ul>
 
-        <h3>Create White Mask:</h3>
-        <pre><code>
-white_mask = cv2.inRange(hsv, lower_white, upper_white)
-        </code></pre>
-        <ul>
-            <li>Generates binary mask highlighting white lane boundary.</li>
-        </ul>
-    </li>
+<!-- 5. Combining Masks and Publishing to ROS Topic -->
+<h2>5. Combining Masks and Publishing to ROS Topic</h2>
+<pre><code>combined_mask = cv2.bitwise_or(yellow_mask, white_mask)
 
-    <li>
-        <h2>Combining Masks and Publishing to ROS Topic</h2>
-        <pre><code>
-combined_mask = cv2.bitwise_or(yellow_mask, white_mask)
 self.pub_both.publish(
     self._bridge.cv2_to_compressed_imgmsg(combined_mask)
 )
-        </code></pre>
+</code></pre>
+<ul>
+    <li><strong>Merging Lane Masks:</strong> Combines both yellow and white detections.</li>
+    <li><strong>ROS Publisher:</strong> Publishes the resulting mask for further use.</li>
+</ul>
+
+
+
+        
+
+   <h2>Using Masks to Compute Lane Center for Autonomous Control</h2>
+
+<p>
+    After detecting lanes (yellow dotted and white solid) and generating binary masks, computing the lane center is essential for autonomous navigation.
+</p>
+
+<h3>1. Computing Lane Center from Masks</h3>
+<ul>
+    <li>Use contours from binary masks to identify lane boundaries.</li>
+    <li>Calculate centroids of these contours to estimate lane positions.</li>
+    <li>Determine the lane center based on available centroids.</li>
+</ul>
+
+<h3>Important Python Functions:</h3>
+<pre><code>
+# Find contours
+contours_white, _ = cv2.findContours(white_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contours_yellow, _ = cv2.findContours(yellow_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Find centroid (example snippet)
+def find_centroid(self, contours):
+    largest_contour = max(contours, key=cv2.contourArea)
+    moments = cv2.moments(largest_contour)
+
+    if moments['m00'] != 0:
+        cx = int(moments['m10'] / moments['m00'])
+        cy = int(moments['m01'] / moments['m00'])
+        return (cx, cy)
+    return None
+</code></pre>
+
+<h3>2. Explanation of the Approach</h3>
+<ul>
+    <li><b>Contours:</b> Identified boundaries in binary lane masks.</li>
+    <li><b>Centroids:</b> Position estimates of lane boundaries.</li>
+    <li><b>Lane Center:</b> Average or select centroids depending on visibility:
         <ul>
-            <li>Combines masks into a single binary image for clear lane visualization.</li>
+            <li>If both lanes detected, average their centroids.</li>
+            <li>If one lane is missing, use the detected lane centroid.</li>
         </ul>
     </li>
-</ol>
+</ul>
+
+<h3>3. Integrating Lane Center with Controllers</h3>
+<p>
+The computed lane center is compared to the image's horizontal midpoint. The difference provides an error signal used by steering controllers (P, PD, PID):
+</p>
+
+<pre><code>
+image_center = image.shape[1] // 2
+error = image_center - lane_center
+steering_command = controller.update(error)
+</code></pre>
+
+<ul>
+    <li>This error calculation directly guides steering corrections to keep the Duckiebot aligned with lane centers.</li>
+</ul>
+
         
         
         
