@@ -136,24 +136,6 @@
                     <li><strong>1 second:</strong> UofA Tag detected.</li>
                     <li><strong>0.5 seconds:</strong> No detection (default state).</li>
                 </ul>
-                
-                <p>
-                    In the beginning, we detect the red line using the HSV values similar to the ones we used in assignment 3 also detect how far it is using similar logic as in assignment 3.
-                    Then we see if there are april-tags.
-                    After detecting an AprilTag, the program assigns a predefined stop duration. Then we change the led to the according to the detected tag. We then call the move_straight function with the distance we calculated the red line to be at.  The Duckiebot halts for the required time, according rules when it reaches that distance. Once the waiting period ends,
-                    it moves forward by 30 cm.
-                </p>
-                
-                <h3>Impact of Detection Rate on Intersection Performance</h3>
-                <p>
-                    The AprilTag detection rate significantly affects intersection behavior and stopping performance. 
-                    At <strong>10Hz</strong>, the system can process detections in near real-time, ensuring that the Duckiebot reacts promptly to intersection signs. 
-                </p>
-                <ul>
-                    <li><strong>Lower detection rate (&lt; 5Hz):</strong> Could cause the Duckiebot to miss detections and fail to stop at intersections.</li>
-                    <li><strong>Higher detection rate (&gt; 15Hz):</strong> Increases CPU load and could introduce redundant stop signals for the same tag.</li>
-                </ul>
-                <p>Thus, a <strong>10Hz detection rate</strong> ensures a balance between efficiency and responsiveness.</p>
                 <ul>
                     <li>
                         <h3>A video of the Duckiebot detecting stop tag changing the lights to red and stopping for 3 second</h3>
@@ -184,6 +166,24 @@
                         </video>
                     </li>
                 </ul>
+                <p>
+                    In the beginning, we detect the red line using the HSV values similar to the ones we used in assignment 3 also detect how far it is using similar logic as in assignment 3.
+                    Then we see if there are april-tags.
+                    After detecting an AprilTag, the program assigns a predefined stop duration. Then we change the led to the according to the detected tag. We then call the move_straight function with the distance we calculated the red line to be at.  The Duckiebot halts for the required time, according rules when it reaches that distance. Once the waiting period ends,
+                    it moves forward by 30 cm.
+                </p>
+                
+                <h3>Impact of Detection Rate on Intersection Performance</h3>
+                <p>
+                    The AprilTag detection rate significantly affects intersection behavior and stopping performance. 
+                    At <strong>10Hz</strong>, the system can process detections in near real-time, ensuring that the Duckiebot reacts promptly to intersection signs. 
+                </p>
+                <ul>
+                    <li><strong>Lower detection rate (&lt; 5Hz):</strong> Could cause the Duckiebot to miss detections and fail to stop at intersections.</li>
+                    <li><strong>Higher detection rate (&gt; 15Hz):</strong> Increases CPU load and could introduce redundant stop signals for the same tag.</li>
+                </ul>
+                <p>Thus, a <strong>10Hz detection rate</strong> ensures a balance between efficiency and responsiveness.</p>
+
     </section>
     
     <section class="references">
