@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AprilTag Detection & Safety Report</title>
+    <link rel="stylesheet" href="templates/assignment3.css">
+</head>
+<body>
+    <h1>Exercise 4: AprilTag Detection & Safety on Robots</h1>
+    
+    <section class="deliverables">
+        <h1>Part 1: AprilTag Detection</h1>
+        
+        <h2>Camera Distortion</h2>
+        <p>Camera distortion can cause perspective errors in images, impacting the accuracy of AprilTag detection. To correct this, we utilize the camera's intrinsic parameters:</p>
+        <ul>
+            <li><strong>Subscription to Camera Topic:</strong> The robot captures images from <code>/camera_node/image/compressed</code>.</li>
+            <li><strong>Undistortion Process:</strong> Using parameters from <code>/camera_node/camera_info</code>, we apply <code>cv2.undistort()</code> to correct radial and tangential distortion.</li>
+        </ul>
+        <p>This is exactly the same as what we did in assignment 3. This was already explained in detail in previous assignment. More details on undistortion on:     <a href="assignment3.html">Assignment 3</a> </p>
+        
+        <h2>Image Preprocessing</h2>
+        <p>Before detecting AprilTags, we enhance image clarity using multiple preprocessing techniques:</p>
+        <ul>
+            <li><strong>Grayscale Conversion:</strong> Reduces computational complexity and improves edge detection.</li>
+            <li><strong>Cropping:</strong> Focuses on the area of interest, removing unnecessary background.</li>
+            <li><strong>Gaussian Blur:</strong> Reduces noise while maintaining sharp contours.</li>
+        </ul>
+
+        <p>
+            The AprilTag detection pipeline in our Duckiebot follows these key steps:
+        </p>
+        <ul>
+            <li><strong>Image Capture:</strong> The camera captures a continuous feed from the <code>/camera_node/image/compressed</code> topic.</li>
+            <li><strong>Undistortion:</strong> The raw images are corrected using camera parameters retrieved from <code>/camera_node/camera_info</code>.</li>
+            <li><strong>Preprocessing:</strong> The image is converted to grayscale, cropped, and filtered to remove noise.</li>
+            <li><strong>Tag Detection:</strong> The <code>dt_apriltags</code> library scans the image for valid AprilTags, extracts their IDs, and computes their position.</li>
+            <li><strong>Data Publishing:</strong> The detected tag data, including ID, position, and confidence score, is published to <code>/camera_apriltag/detections</code>.</li>
+        </ul>
+        
+        <h2>Publishing April-tag information</h2>
+        <p>
+            Once an AprilTag is detected, the information is published to multiple topics to ensure other components of the Duckiebot can use the data effectively:
+        </p>
+        <ul>
+            <li><code>/camera_apriltag/detections</code>: Contains detailed detection data such as tag ID, position, and orientation.</li>
+            <li><code>/camera_apriltag/image/compressed</code>: Publishes an annotated image where detected AprilTags are marked with bounding boxes and labels.</li>
+        </ul>
+        
+  
+                <h2>Efficient AprilTag Detection</h2>
+                <p>AprilTag detection plays a crucial role in guiding the Duckiebot in an autonomous environment. In this section, we evaluate the detection process based on efficiency, frequency, and system performance.</p>
+                
+                <h3>1. What is a reasonable detection rate?</h3>
+                <p>
+                    The system operates at a detection frequency of <strong>10Hz</strong>, meaning the AprilTag detection algorithm processes <strong>10 frames per second (FPS)</strong>. 
+                    This rate ensures a balance between computational efficiency and real-time performance. 
+                </p>
+                <p>
+                    A lower detection rate (< 5Hz) would lead to delayed responses, causing the robot to react slowly to AprilTags. On the other hand, a higher frequency (> 15Hz) 
+                    would introduce unnecessary computational overhead, leading to performance issues such as increased CPU usage, delayed motor actuation, and potential frame loss in ROS.
+                </p>
+                
+                <h3>2. Using AprilTags as Traffic Signs</h3>
+                <p>
+                    When using AprilTags as traffic signs, continuous monitoring is essential for accurate navigation. The chosen detection rate of <strong>10Hz</strong> allows the Duckiebot to check for tags in near real-time 
+                    while maintaining stable performance. The logic behind this frequency is:
+                </p>
+                <ul>
+                    <li><strong>Real-time Responsiveness:</strong> 10 detections per second ensures that the Duckiebot can recognize tags within milliseconds of encountering them.</li>
+                    <li><strong>Motion Adaptability:</strong> As the Duckiebot moves, the AprilTags must be detected quickly enough to allow reaction before passing the tag.</li>
+                    <li><strong>Ensuring Stability:</strong> Running the detection at 10Hz prevents unnecessary resource consumption while still being fast enough for smooth decision-making.</li>
+                </ul>
+                
+                <h3>3. Impact on Other Control Algorithms</h3>
+                <p>
+                    The detection rate directly impacts other core algorithms responsible for navigation and movement control. A poorly optimized rate can lead to:
+                </p>
+                <ul>
+                    <li><strong>Delays in Obstacle Avoidance:</strong> If detection is too slow, the Duckiebot may not react in time to stop at intersections.</li>
+                    <li><strong>Increased CPU Load:</strong> Higher rates could slow down other processes such as motor control and lane following.</li>
+                    <li><strong>Frame Overlaps:</strong> A high detection rate might lead to redundant detections, causing multiple stop signals for the same tag.</li>
+                </ul>
+                <p>
+                    A detection rate of <strong>10Hz</strong> allows the Duckiebot to balance computational efficiency with responsiveness, ensuring that other ROS nodes, such as motor control and LED feedback, 
+                    are not overloaded.
+                </p>
+                
+                <h3>4. Justification of Detection Rate</h3>
+                <p>
+                    The choice of <strong>10Hz</strong> is based on empirical testing, ensuring that the Duckiebot can recognize AprilTags within an optimal time frame. The reasoning behind this decision includes:
+                </p>
+                <ul>
+                    <li><strong>Human Reaction Benchmark:</strong> The average human reaction time is ~250ms. At 10Hz, the Duckiebot checks its environment every 100ms, ensuring a response time faster than a human driver.</li>
+                    <li><strong>AprilTag Visibility Window:</strong> Based on testing, an AprilTag remains visible in the camera frame for approximately <strong>0.5 - 1.2 seconds</strong>. With a 10Hz detection rate, at least <strong>5-12 frames</strong> can be processed per tag appearance, reducing the risk of missing detections.</li>
+                    <li><strong>Computational Constraints:</strong> Running at 10Hz ensures that the Duckiebot does not exceed its processing capacity while maintaining a steady ROS loop rate.</li>
+                </ul>
+                
+
+                <h3>AprilTag Detection Demonstration</h3>
+                <video width="auto" height="600" controls>
+                    <source src="videos/april_tag.webm" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <h3>Detecting april tag and moving</h3>
+                <video width="auto" height="600" controls>
+                    <source src="videos/while_run.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p>This video was captured ont the <code>/camera_apriltag/image/compressed</code> topic while running the tag detection and changing led and moving code</p>
+            
+            
+        
+                <h2>LED Changes Based on AprilTag Detection</h2>
+                <p>Upon detecting an AprilTag, the Duckiebot immediately updates its LED color to signal different road conditions. This ensures clear, real-time visual feedback for navigation.</p>
+                
+                <ul>
+                    <li><strong>Red LED:</strong> Stop Sign detected.</li>
+                    <li><strong>Blue LED:</strong> T-Intersection detected.</li>
+                    <li><strong>Green LED:</strong> UofA Tag detected.</li>
+                    <li><strong>White LED:</strong> No detection (default state).</li>
+                </ul>
+                
+                <h3>How the Code Works</h3>
+                <p>
+                    We subscribe to the topic we created before <code>/camera_apriltag/detections</code> where detected tag information is received. The program extracts the tag ID and, based on predefined categories where category have their own tagID
+                    (Stop Sign, T-Intersection, UofA Tag), assigns the corresponding LED color. The LED update is executed immediately upon detection to ensure real-time feedback.
+                </p>
+                
+                <h2>Stopping Based on AprilTag Detection</h2>
+                <p>The Duckiebot stops for a specific duration based on the last detected AprilTag:</p>
+                <ul>
+                    <li><strong>3 seconds:</strong> Stop Sign detected.</li>
+                    <li><strong>2 seconds:</strong> T-Intersection detected.</li>
+                    <li><strong>1 second:</strong> UofA Tag detected.</li>
+                    <li><strong>0.5 seconds:</strong> No detection (default state).</li>
+                </ul>
+                
+                <p>
+                    In the beginning, we detect the red line using the HSV values similar to the ones we used in assignment 3 also detect how far it is using similar logic as in assignment 3.
+                    Then we see if there are april-tags.
+                    After detecting an AprilTag, the program assigns a predefined stop duration. Then we change the led to the according to the detected tag. We then call the move_straight function with the distance we calculated the red line to be at.  The Duckiebot halts for the required time, according rules when it reaches that distance. Once the waiting period ends,
+                    it moves forward by 30 cm.
+                </p>
+                
+                <h3>Impact of Detection Rate on Intersection Performance</h3>
+                <p>
+                    The AprilTag detection rate significantly affects intersection behavior and stopping performance. 
+                    At <strong>10Hz</strong>, the system can process detections in near real-time, ensuring that the Duckiebot reacts promptly to intersection signs. 
+                </p>
+                <ul>
+                    <li><strong>Lower detection rate (&lt; 5Hz):</strong> Could cause the Duckiebot to miss detections and fail to stop at intersections.</li>
+                    <li><strong>Higher detection rate (&gt; 15Hz):</strong> Increases CPU load and could introduce redundant stop signals for the same tag.</li>
+                </ul>
+                <p>Thus, a <strong>10Hz detection rate</strong> ensures a balance between efficiency and responsiveness.</p>
+                <ul>
+                    <li>
+                        <h3>A video of the Duckiebot detecting stop tag and stopping for 3 second</h3>
+                        <video width="auto" height="600" controls>
+                            <source src="videos/stop.mp4" type="video/mp4">
+                            Your 
+                        </video>
+                    </li>
+                    <li>
+                        <h3>A video of the Duckiebot detecting T-intersection tag and stopping for 2 second</h3>
+                        <video width="auto" height="600" controls>
+                            <source src="videos/t-inter.mp4" type="video/mp4">
+                            Your 
+                        </video>
+                    </li>
+                    <li>
+                        <h3>A video of the Duckiebot detecting U-ofA tag and stopping for 1 second</h3>
+                        <video width="auto" height="600" controls>
+                            <source src="videos/ualberta.mp4" type="video/mp4">
+                            Your 
+                        </video>
+                    </li>
+                    <li>
+                        <h3>A video of the Duckiebot detecting no tag and stopping for 0.5 second</h3>
+                        <video width="auto" height="600" controls>
+                            <source src="videos/non.mov" type="video/mp4">
+                            Your 
+                        </video>
+                    </li>
+                </ul>
+    </section>
+    
+    <section class="references">
+        <h2>References</h2>
+        <ul>
+            <li>Documentation on <code>dt_apriltags</code> Library</li>
+            <li>OpenCV Image Processing Methods</li>
+            <li>Duckietown Course Resources</li>
+        </ul>
+    </section>
+    
+    <h3>By: Sandhya Adhikari and Fumanpreet Singh</h3>
+    <a href="index.html">Back to Assignments</a>
+</body>
+</html>
