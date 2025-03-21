@@ -183,14 +183,17 @@
             <li><strong>Higher detection rate (&gt; 15Hz):</strong> Increases CPU load and could introduce redundant stop signals for the same tag.</li>
         </ul>
         <p>Thus, a <strong>10Hz detection rate</strong> ensures a balance between efficiency and responsiveness.</p>
+    </section>
+    
+    <section class="deliverables">
 
         <h1>Part Two - PeDuckstrian Crosswalks</h1>
         <h2>1. Detecting Crosswalks with Double Blue Lines</h2>
         <p>
         In this section, the Duckiebot is required to detect crosswalks marked by two blue lines and stop at the <strong>first blue line</strong>, regardless of whether peDuckstrians are crossing. We implemented this using an HSV-based color segmentation pipeline enhanced with contrast boosting using CLAHE (Contrast Limited Adaptive Histogram Equalization). First, the image is undistorted using camera parameters from <code>/camera_info</code> and enhanced using:
         </p>
-        <pre><code>clahe = cv2.createCLAHE(...)
-        lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)</code></pre>
+        <pre>clahe = cv2.createCLAHE(...)
+        lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)</pre>
         
         <p>
         During testing, we observed that the blue tape lines were hard to distinguish from the black road at a distance due to poor contrast and similar darkness. To address this, we used contrast enhancement with CLAHE to improve visibility of the blue features even in low light or dark surfaces.
@@ -199,7 +202,7 @@
         <ul>
             <li><strong>HSV Thresholding:</strong> We apply a binary mask using the range <code>[85, 50, 50] to [130, 255, 255]</code> to isolate blue features.</li>
             <li><strong>Contour Filtering:</strong> We then filter for wide, horizontal rectangles by checking that the aspect ratio is > 3 and area > 100:
-                <pre><code>aspect_ratio = float(w) / h</code></pre>
+                <pre>aspect_ratio = float(w) / h</pre>
             </li>
             <li><strong>Double Line Handling:</strong> The crosswalk has two lines, so we sort the valid contours by vertical position and select the lowest one using:
                 <pre><code>valid.sort(key=lambda c: cv2.boundingRect(c)[1], reverse=True)</code></pre>
@@ -246,11 +249,35 @@
             <source src="videos/duckies.mov" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        
-        <h2>Why This Design?</h2>
+        <h2>ROS Communication</h2>
+        <ul>
+            <li>Subscribed to camera images from <code>/&lt;VEHICLE_NAME&gt;/camera_node/image/compressed</code>.</li>
+            <li>Subscribed to camera info from <code>/&lt;VEHICLE_NAME&gt;/camera_node/camera_info</code> for undistortion and focal length.</li>
+            <li>Published estimated distance to the first crosswalk line to <code>/&lt;VEHICLE_NAME&gt;/crosswalk_distance</code> as a <code>Float32</code>.</li>
+            <li>Published peDuckstrian detection state (clear or blocked) to <code>/&lt;VEHICLE_NAME&gt;/peduckstrian_detection/clear</code> as a <code>Bool</code>.</li>
+            <li>Optionally published debug images (duck detection overlays) to <code>/&lt;VEHICLE_NAME&gt;/camera_ducks/image/compressed</code>.</li>
+        </ul>
+        <h2>Execution Flow</h2>
         <p>
-        This setup keeps things fast and robust:
+        During execution, the Duckiebot follows this sequence to safely handle crosswalks and peDuckstrians:
         </p>
+        <ol>
+            <li><strong>Crosswalk Detection:</strong> The robot continuously scans for blue lines using HSV filtering with contrast-enhanced input. If two horizontal blue lines are detected, the bot targets the first one (closest).</li>
+            <li><strong>Distance Estimation:</strong> Once the first line is found, the system estimates its distance using the width of the line in pixels and the camera's focal length.</li>
+            <li><strong>Approach First Line:</strong> The Duckiebot drives forward to just before the first blue line (typically 3–5 cm behind it) using <code>navigator.move_straight()</code>.</li>
+            <li><strong>Stop and Wait:</strong> Upon arrival at the line, it stops and pauses for 1 second regardless of peDuckstrian presence.</li>
+            <li><strong>PeDuckstrian Detection:</strong> After stopping, the Duckiebot scans the lower portion of the image for yellow + red color patterns that match the peDuckstrian ducks.</li>
+            <li><strong>Wait if Duck is Present:</strong> If a peDuckstrian is detected, the bot waits at the line until 4 consecutive frames confirm the area is clear (using a rolling buffer of detections).</li>
+            <li><strong>Proceed After Clearance:</strong> Once no duck is detected, the bot turns the LED to green and moves forward past the second line (~30–40 cm) to clear the crosswalk.</li>
+        </ol>
+        <p>
+        This ensures the Duckiebot always stops at crosswalks, waits for pedestrians, and only resumes when it's safe to proceed.
+        </p>
+
+        
+
+        
+        <h2>Summary for part 2</h2>
         <ul>
             <li>Only stops at the first crosswalk line using <code>cv2.boundingRect</code> sorting logic.</li>
             <li>Duck detection requires yellow+red combo to confirm, preventing false alarms.</li>
@@ -258,16 +285,113 @@
             <li>A buffer of recent detections smooths out noise, using simple list-based logic.</li>
             <li>CLAHE contrast enhancement solves visibility issues due to dark road and tape colors.</li>
         </ul>
-        
+    </section>
+    <section class="deliverables">
+
+        <h1>Part Three - Safe Navigation</h1>
+
+        <h2>1. Detecting Another Duckiebot</h2>
+        <p>
+        To detect a broken-down Duckiebot ahead, we leveraged its distinct pattern of black circular dots on a white background. Since we always approach the other bot from behind, this pattern is clearly visible from ~30 cm away. Our detection pipeline uses contrast-enhanced grayscale images followed by blob filtering using OpenCV’s <code>SimpleBlobDetector</code>.
+        </p>
+
+        <p>
+            We observed that the back of the Duckiebot has a distinct pattern of black circular dots arranged in a grid-like fashion. Based on this, our first idea was to use that visual signature as the detection cue. We built the detection pipeline specifically around this pattern, using blob detection to isolate circular features and estimate distance based on their spread. This approach worked much better than color or shape-based methods in our tests.
+            </p>
+            
+            <pre># cv2.SimpleBlobDetector_Params used
+                params.filterByArea = True       
+                params.minArea = 3      
+                params.maxArea = 80         
+                params.filterByCircularity = True       
+                params.minCircularity = 0.85</pre>
+                
+
+        <p>
+        To reduce false positives from noise or distant black features, we applied several preprocessing steps:
+        </p>
+        <ul>
+            <li><strong>Cropping:</strong> Focus on the center of the image by removing top/bottom 30% and side 40%.</li>
+            <li><strong>CLAHE:</strong> Improve contrast in varying lighting conditions.</li>
+            <li><strong>Adaptive Thresholding:</strong> Better binary segmentation under non-uniform light.</li>
+            <li><strong>Contour Filtering:</strong> Final mask keeps only circular blobs using circularity calculation.</li>
+        </ul>
+
+        <p>
+        We faced a challenge where distant dots appeared too small and were filtered out. Also, in some frames, random noise would trigger false dots. To handle this, we:
+        </p>
+        <ul>
+            <li>Used a <strong>5-frame smoothing buffer</strong> to stabilize distance estimates:</li>
+            <pre>self.history.append(distance)
+            return np.mean(self.history)</pre>
+            <li>Published detection state (clear or blocked) on <code>/duckiebot_detection/clear</code> as a <code>Bool</code>.</li>
+            <li>Published estimated distance (in cm) to <code>/duckiebot_detection/distance</code> as a <code>Float32</code>.</li>
+            <li>Optionally published debug images to <code>/camera_ducks/image/compressed</code>.</li>
+        </ul>
+
+        <h2>2. Pause to Assess</h2>
+        <p>
+        Once the pattern was detected, we used the distance estimate to stop approximately <strong>15 cm behind</strong> the detected Duckiebot. If the robot was already within 15 cm, we skipped forward motion and paused:
+        </p>
+        <p>
+            In the <code>auto_nav_func() </code> We have following methods:
+            <pre>
+                sharp_left() : Turns sharp 90 degeree left
+                move_straight(DISTANCE_IN_M): Moves the straight the distance provided
+                sharp_right() : Turns sharp right 90 degree
+            </pre>
+        <pre>if self.distance > 0.15:
+            self.navigator.move_straight(self.distance - 0.18)</pre>
+        <p>
+        We stopped for 3 seconds to simulate damage assessment before attempting a maneuver. LED behavior was also controlled to indicate the stop state.</p>
+
+        <h2>3. Maneuver Around the Broken Duckiebot</h2>
+        <p>
+        After the pause, we executed a planned avoidance maneuver:
+        </p>
+        <ol>
+            <li><strong>Turn left 90°</strong> to shift into the opposing lane.</li>
+            <li><strong>Drive forward</strong> 8–10 cm to align.</li>
+            <li><strong>Turn right 90°</strong> to face forward.</li>
+            <li><strong>Drive straight</strong> for ~45 cm to bypass the bot.</li>
+            <li><strong>Turn right</strong> again, move forward slightly, and finally <strong>turn left</strong> back into the correct lane.</li>
+        </ol>
+
+
+        All turns were executed using the navigator methods like <code>navigator.sharp_left()</code> and <code>navigator.sharp_right()</code>. This path ensured the Duckiebot made no physical contact with the broken one and respected lane boundaries.
+        </p>
+
+        <h2>4. Continue Driving as Usual</h2>
+        <p>
+        After completing the lane switch and passing the obstacle, we transitioned back into the original lane and resumed normal driving. The Duckiebot drove an additional ~30 cm forward to complete the sequence:
+        </p>
+        <pre>self.navigator.move_straight(0.3)</pre>
+        <h3>Video of bot moving straight if bot is detected and waiting to clear if duckiebot are present</h3>
+        <video width="auto" height="600" controls>
+            <source src="videos/bot_detect.mov" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <h2>Challenges</h2>
+        <ul>
+            <li>Distant blobs were often filtered out or merged due to their small size.</li>
+            <li>Some frames contained noise interpreted as dots; fixed using binary mask cleanup and detection history buffer.</li>
+            <li>Stable distance estimation used smoothed rolling average of last 5 valid frames.</li>
+        </ul>
+                
     </section>
     
     <section class="references">
         <h2>References</h2>
         <ul>
-            <li>Documentation on <code>dt_apriltags</code> Library</li>
-            <li>OpenCV Image Processing Methods</li>
-            <li>Duckietown Course Resources</li>
-        </ul>
+            <li> 
+                <a href="https://learnopencv.com/blob-detection-using-opencv-python-c/">Open CV Blob detection</a>
+            </li>
+            <li>
+                <a href="https://www.geeksforgeeks.org/clahe-histogram-eqalization-opencv/">geeksforgeeks CLAHE</a>
+            </li>
+            <li>ChatGPT was used with report and some parts of coding</li>
+                </ul>
     </section>
     
     <h3>By: Sandhya Adhikari and Fumanpreet Singh</h3>
