@@ -64,13 +64,12 @@
         
         <h3>2. Using AprilTags as Traffic Signs</h3>
         <p>
-            When using AprilTags as traffic signs, continuous monitoring is essential for accurate navigation. The chosen detection rate of <strong>10Hz</strong> allows the Duckiebot to check for tags in near real-time 
-            while maintaining stable performance. The logic behind this frequency is:
+            When using AprilTags as traffic signs, finding the right detection rate is important for good navigation. A rate of <strong>10Hz</strong> (10 times per second) works well because:
         </p>
         <ul>
-            <li><strong>Real-time Responsiveness:</strong> 10 detections per second ensures that the Duckiebot can recognize tags within milliseconds of encountering them.</li>
-            <li><strong>Motion Adaptability:</strong> As the Duckiebot moves, the AprilTags must be detected quickly enough to allow reaction before passing the tag.</li>
-            <li><strong>Ensuring Stability:</strong> Running the detection at 10Hz prevents unnecessary resource consumption while still being fast enough for smooth decision-making.</li>
+            <li><strong>Quick Response:</strong> Checking 10 times per second means your robot can see tags almost right away when they appear.</li>
+            <li><strong>Keeps Up With Movement:</strong> As the robot moves around, it needs to spot tags quickly enough to react before passing them.</li>
+            <li><strong>Balanced Performance:</strong> Running at 10Hz uses a reasonable amount of computer power while still being fast enough for smooth driving decisions.</li>
         </ul>
         
         <h3>3. Impact on Other Control Algorithms</h3>
@@ -89,14 +88,13 @@
         
         <h3>4. Justification of Detection Rate</h3>
         <p>
-            The choice of <strong>10Hz</strong> is based on empirical testing, ensuring that the Duckiebot can recognize AprilTags within an optimal time frame. The reasoning behind this decision includes:
+            The choice of <strong>10Hz</strong> for AprilTag detection is based on practical testing and robot capabilities. This rate provides the best balance because:
         </p>
         <ul>
-            <li><strong>Human Reaction Benchmark:</strong> The average human reaction time is ~250ms. At 10Hz, the Duckiebot checks its environment every 100ms, ensuring a response time faster than a human driver.</li>
-            <li><strong>AprilTag Visibility Window:</strong> Based on testing, an AprilTag remains visible in the camera frame for approximately <strong>0.5 - 1.2 seconds</strong>. With a 10Hz detection rate, at least <strong>5-12 frames</strong> can be processed per tag appearance, reducing the risk of missing detections.</li>
-            <li><strong>Computational Constraints:</strong> Running at 10Hz ensures that the Duckiebot does not exceed its processing capacity while maintaining a steady ROS loop rate.</li>
+            <li><strong>Faster Than Human Reactions:</strong> Human reaction time averages around 250ms (1/4 second). At 10Hz, our robot checks for tags every 100ms - more than twice as fast as a human driver would respond.</li>
+            <li><strong>Enough Time to See Tags:</strong> Our tests show that AprilTags typically stay visible in the camera view for about <strong>0.5-1.2 seconds</strong>. With 10 checks per second, the robot can capture <strong>5-12 frames</strong> of each tag, making it very unlikely to miss important signs.</li>
+            <li><strong>Works Within Robot Limits:</strong> The 10Hz rate allows the detection system to run smoothly without overloading the robot's computer, ensuring other navigation systems can operate properly at the same time.</li>
         </ul>
-        
 
         <h3>AprilTag Detection Demonstration</h3>
         <video width="auto" height="600" controls>
